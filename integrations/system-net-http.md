@@ -1,25 +1,22 @@
-# `System.Net.Http` integration <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+# `System.Net.Http` 集成 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-To be able to communicate with HTTP servers, the OpenIddict client and validation stacks rely on companion packages
-named `OpenIddict.Client.SystemNetHttp` and `OpenIddict.Validation.SystemNetHttp`.
+为了能够与 HTTP 服务器通信，OpenIddict 客户端和验证堆栈依赖于名为 `OpenIddict.Client.SystemNetHttp` 和 `OpenIddict.Validation.SystemNetHttp` 的配套包。
 
 > [!INFO]
-> These packages are responsible for instantiating the `HttpClient` objects needed to send HTTP requests (using `Microsoft.Extensions.Http`)
-> and managing their lifetime. They also take care of preparing the `HttpRequestMessage` instances and extracting the
-> corresponding `HttpResponseMessage` once the HTTP response has been received.
+> 这些包负责实例化发送 HTTP 请求所需的 `HttpClient` 对象（使用 `Microsoft.Extensions.Http`）并管理它们的生命周期。它们还负责准备 `HttpRequestMessage` 实例，并在收到 HTTP 响应后提取相应的 `HttpResponseMessage`。
 
-## Basic configuration <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+## 基本配置 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-To configure the `System.Net.Http` integration, you'll need to:
-  - **Reference the `OpenIddict.Client.SystemNetHttp` and/or `OpenIddict.Validation.SystemNetHttp` packages**
-  (depending on whether you need the client and/or validation features in your project):
+要配置 `System.Net.Http` 集成，您需要：
+  - **引用 `OpenIddict.Client.SystemNetHttp` 和/或 `OpenIddict.Validation.SystemNetHttp` 包**
+  （取决于您的项目中是否需要客户端和/或验证功能）：
 
   ```xml
   <PackageReference Include="OpenIddict.Client.SystemNetHttp" Version="6.2.0" />
   <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="6.2.0" />
   ```
 
-  - **Call `UseSystemNetHttp()` for each OpenIddict feature (client and validation) you want to add**:
+  - **为每个您想要添加的 OpenIddict 功能（客户端和验证）调用 `UseSystemNetHttp()`**：
 
   ```csharp
   services.AddOpenIddict()
@@ -33,13 +30,12 @@ To configure the `System.Net.Http` integration, you'll need to:
       });
   ```
 
-## Advanced configuration
+## 高级配置
 
-### Configure a contact address <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 配置联系地址 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-The `System.Net.Http` integration allows setting an email address that is sent as part of the standard `From` HTTP header.
-While not strictly required, doing that can help authorization servers managed by third parties contact you
-when they think something is wrong with your use of their service:
+`System.Net.Http` 集成允许设置一个电子邮件地址，该地址将作为标准 `From` HTTP 标头的一部分发送。
+虽然不是严格要求，但这样做可以帮助第三方管理的授权服务器在他们认为您使用他们的服务出现问题时联系您：
 
 ```csharp
 services.AddOpenIddict()
@@ -55,10 +51,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Configure a product name <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 配置产品名称 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-While OpenIddict always sends a default `User-Agent` (containing the name of the `System.Net.Http` integration and its .NET assembly
-version), it is recommended to set a product name and a product version to help OpenIddict send a more detailed `User-Agent` header:
+虽然 OpenIddict 始终发送默认的 `User-Agent`（包含 `System.Net.Http` 集成的名称和其 .NET 程序集版本），
+但建议设置产品名称和产品版本，以帮助 OpenIddict 发送更详细的 `User-Agent` 标头：
 
 ```csharp
 services.AddOpenIddict()
@@ -74,7 +70,7 @@ services.AddOpenIddict()
     });
 ```
 
-The identity of a specific .NET `Asssembly` can also be used:
+也可以使用特定 .NET `Assembly` 的标识：
 
 ```csharp
 services.AddOpenIddict()
@@ -90,11 +86,11 @@ services.AddOpenIddict()
     });
 ```
 
-### Configure a custom HTTP error policy <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 配置自定义 HTTP 错误策略 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-To mitigate transient HTTP errors (e.g temporary connectivity issues), OpenIddict uses a default error policy
-that automatically retries sending a failed HTTP request up to 4 times. While the default policy is appropriate
-for most applications, the default policy can be overridden using the `SetHttpErrorPolicy()` API:
+为了缓解临时性 HTTP 错误（例如临时连接问题），OpenIddict 使用默认错误策略，
+该策略会自动重试发送失败的 HTTP 请求最多 4 次。虽然默认策略适用于大多数应用程序，
+但可以使用 `SetHttpErrorPolicy()` API 覆盖默认策略：
 
 ```csharp
 services.AddOpenIddict()
@@ -115,15 +111,15 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> On .NET 8.0 and higher, OpenIddict no longer registers an `IAsyncPolicy<HttpResponseMessage>` by default and uses
-> a `ResiliencePipeline<HttpResponseMessage>` instead. If you decide to explicitly configure an HTTP error policy,
-> the HTTP resilience pipeline will be ignored, whether you use the default instance or a custom resilience pipeline.
+> 在 .NET 8.0 及更高版本中，OpenIddict 不再默认注册 `IAsyncPolicy<HttpResponseMessage>`，
+> 而是使用 `ResiliencePipeline<HttpResponseMessage>`。如果您决定显式配置 HTTP 错误策略，
+> 无论您使用默认实例还是自定义弹性管道，HTTP 弹性管道都将被忽略。
 
-### Configure a custom HTTP resilience pipeline <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 配置自定义 HTTP 弹性管道 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-On .NET 8.0 and higher, OpenIddict uses a `ResiliencePipeline<HttpResponseMessage>` instead of an `IAsyncPolicy<HttpResponseMessage>`
-to deal with transient HTTP errors (failed HTTP requests are retried up to 4 times).  While the default resilience pipeline is appropriate
-for most applications, the default resilience pipeline can be overridden using the `SetHttpResiliencePipeline()` API:
+在 .NET 8.0 及更高版本中，OpenIddict 使用 `ResiliencePipeline<HttpResponseMessage>` 而不是 `IAsyncPolicy<HttpResponseMessage>`
+来处理临时性 HTTP 错误（失败的 HTTP 请求最多重试 4 次）。虽然默认弹性管道适用于大多数应用程序，
+但可以使用 `SetHttpResiliencePipeline()` API 覆盖默认弹性管道：
 
 ```csharp
 services.AddOpenIddict()
@@ -155,10 +151,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Register a custom `HttpClient` configuration delegate <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 注册自定义 `HttpClient` 配置委托 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-For scenarios that require tweaking the `HttpClient` instances used by OpenIddict (e.g to add a custom static header),
-an `Action<HttpClient>` configuration delegate can be registered using the `ConfigureHttpClient()` API:
+对于需要调整 OpenIddict 使用的 `HttpClient` 实例的场景（例如添加自定义静态标头），
+可以使用 `ConfigureHttpClient()` API 注册 `Action<HttpClient>` 配置委托：
 
 ```csharp
 services.AddOpenIddict()
@@ -174,7 +170,7 @@ services.AddOpenIddict()
     });
 ```
 
-The OpenIddict client integration also allows configuring a provider-specific delegate:
+OpenIddict 客户端集成还允许配置特定提供程序的委托：
 
 ```csharp
 services.AddOpenIddict()
@@ -185,7 +181,7 @@ services.AddOpenIddict()
     });
 ```
 
-For advanced scenarios, an `Action<OpenIddictClientRegistration, HttpClient>` delegate can be used instead:
+对于高级场景，可以使用 `Action<OpenIddictClientRegistration, HttpClient>` 委托：
 
 ```csharp
 services.AddOpenIddict()
@@ -202,11 +198,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Register a custom `HttpClientHandler` configuration delegate <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
+### 注册自定义 `HttpClientHandler` 配置委托 <Badge type="warning" text="client" /><Badge type="tip" text="validation" />
 
-For scenarios that require tweaking the `HttpClientHandler` instances used by OpenIddict (e.g to override or disable the
-TLS server certificate validation logic during development), an `Action<HttpClientHandler>` configuration delegate can be
-registered using the `ConfigureHttpClientHandler()` API:
+对于需要调整 OpenIddict 使用的 `HttpClientHandler` 实例的场景（例如在开发期间覆盖或禁用 TLS 服务器证书验证逻辑），
+可以使用 `ConfigureHttpClientHandler()` API 注册 `Action<HttpClientHandler>` 配置委托：
 
 ```csharp
 services.AddOpenIddict()
@@ -222,7 +217,7 @@ services.AddOpenIddict()
     });
 ```
 
-The OpenIddict client integration also allows configuring a provider-specific delegate:
+OpenIddict 客户端集成还允许配置特定提供程序的委托：
 
 ```csharp
 services.AddOpenIddict()
@@ -233,7 +228,7 @@ services.AddOpenIddict()
     });
 ```
 
-For advanced scenarios, an `Action<OpenIddictClientRegistration, HttpClientHandler>` delegate can be used instead:
+对于高级场景，可以使用 `Action<OpenIddictClientRegistration, HttpClientHandler>` 委托：
 
 ```csharp
 services.AddOpenIddict()

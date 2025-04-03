@@ -1,30 +1,28 @@
-# Choosing the right flow <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+# 选择合适的流程 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-OpenIddict offers built-in support for all the standard flows defined by the
-[OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) and [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) core specifications:
-[the authorization code flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth),
-[the implicit flow](https://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth),
-[the hybrid flow](https://openid.net/specs/openid-connect-core-1_0.html#HybridFlowAuth) (generally treated as a mix between the first two flows),
-[the resource owner password credentials grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.3) and
-[the client credentials grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4).
+OpenIddict 提供了对 [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) 和 [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) 核心规范中定义的所有标准流程的内置支持：
+[授权码流程](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth)、
+[隐式流程](https://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth)、
+[混合流程](https://openid.net/specs/openid-connect-core-1_0.html#HybridFlowAuth)（通常被视为前两种流程的混合）、
+[资源所有者密码凭证授权](https://datatracker.ietf.org/doc/html/rfc6749#section-4.3)和
+[客户端凭证授权](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4)。
 
 > [!IMPORTANT]
-> All these flows are supported by both the server and the client stacks, except the legacy OAuth 2.0 implicit flow (i.e `response_type=token`),
-> which is supported by the OpenIddict server for compatibility reasons but is not allowed to be negotiated by the OpenIddict client for security reasons.
+> 所有这些流程都受到服务器和客户端堆栈的支持，除了传统的 OAuth 2.0 隐式流程（即 `response_type=token`），
+> 出于兼容性原因，OpenIddict 服务器支持该流程，但出于安全原因，OpenIddict 客户端不允许协商该流程。
 
-While not specific to OpenIddict, choosing the best flow(s) for your application is an **important prerequisite**
-when implementing your own authorization server ; so here's a quick overview of the different OAuth 2.0/OpenID Connect flows:
+虽然这不是 OpenIddict 特有的，但在实现自己的授权服务器时，为应用程序选择最佳流程是一个**重要的先决条件**；
+以下是不同 OAuth 2.0/OpenID Connect 流程的快速概述：
 
-## Non-interactive flows
+## 非交互式流程
 
-### Resource owner password credentials flow (not recommended for new applications)
+### 资源所有者密码凭证流程（不推荐用于新应用程序）
 
-Directly inspired by [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the resource owner password credentials grant
-(abbreviated *ROPC*) is conceptually **the simplest OAuth 2.0 flow**: the client application asks the user his username/password, sends a token request
-to the authorization server with the user credentials (and depending on the client authentication policy defined by the authorization server,
-its own client credentials) and gets back an access token it can use to retrieve the user's resources.
+直接受[基本认证](https://en.wikipedia.org/wiki/Basic_access_authentication)启发，资源所有者密码凭证授权
+（缩写为 *ROPC*）在概念上是**最简单的 OAuth 2.0 流程**：客户端应用程序询问用户的用户名/密码，向授权服务器发送包含用户凭证的令牌请求
+（根据授权服务器定义的客户端认证策略，可能还需要包含其自己的客户端凭证），并获取一个访问令牌，用于检索用户的资源。
 
-![Resource owner password credentials flow](choosing-the-right-flow/resource-owner-password-flow.png)
+![资源所有者密码凭证流程](choosing-the-right-flow/resource-owner-password-flow.png)
 
 ```http
 POST /connect/token HTTP/1.1
@@ -48,21 +46,21 @@ Pragma: no-cache
 ```
 
 > [!CAUTION]
-> This flow is **not recommended by the OAuth 2.0 specification** as it's the only grant type where **the user password is directly exposed to the client application**,
-> which breaks the principle of least privilege and **makes it unsuitable for third-party client applications that can't be fully trusted by the authorization server**.
+> 此流程**不被 OAuth 2.0 规范推荐**，因为它是唯一一个**用户密码直接暴露给客户端应用程序**的授权类型，
+> 这违反了最小权限原则，**使其不适合不能被授权服务器完全信任的第三方客户端应用程序**。
 >
-> While popular and trivial to implement (as it doesn't involve any redirection or consent form and unlike interactive flows, doesn't require implementing
-> cross-site request forgery (XSRF) countermeasures to prevent session fixation attacks), **its use in new applications is not recommended**. Instead,
-> users are encouraged to use the authorization code flow, that doesn't expose passwords to client applications and is not limited to password authentication.
+> 虽然流行且易于实现（因为它不涉及任何重定向或同意表单，并且与交互式流程不同，不需要实现
+> 跨站请求伪造（XSRF）对策来防止会话固定攻击），但**不建议在新应用程序中使用**。相反，
+> 鼓励用户使用授权码流程，该流程不会将密码暴露给客户端应用程序，并且不仅限于密码认证。
 
 <!-- more -->
 
-### Client credentials grant (recommended for machine-to-machine communication)
+### 客户端凭证授权（推荐用于机器间通信）
 
-The client credentials grant is almost identical to the resource owner password credentials grant, except it's been specifically designed for **client-to-server scenarios**
-(no user is involved in this flow): the client application sends a token request containing its credentials and gets back an access token it can use to query its own resources.
+客户端凭证授权与资源所有者密码凭证授权几乎相同，只是它专门设计用于**客户端到服务器场景**
+（此流程中不涉及用户）：客户端应用程序发送包含其凭证的令牌请求，并获取一个访问令牌，用于查询其自己的资源。
 
-![Client credentials flow](choosing-the-right-flow/client-credentials-flow.png)
+![客户端凭证流程](choosing-the-right-flow/client-credentials-flow.png)
 
 ```http
 POST /connect/token HTTP/1.1
@@ -86,35 +84,35 @@ Pragma: no-cache
 ```
 
 > [!NOTE]
-> Unlike the resource owner password credentials grant, **client authentication is not optional** when using the client credentials grant and
-> **the OpenIddict sserver will always reject unauthenticated token requests**,
-> [as required by the OAuth 2.0 specification](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.2).
+> 与资源所有者密码凭证授权不同，使用客户端凭证授权时**客户端认证不是可选的**，并且
+> **OpenIddict 服务器将始终拒绝未认证的令牌请求**，
+> [如 OAuth 2.0 规范所要求](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4.2)。
 >
-> This means that **you CAN'T use the client credentials grant with public applications** like browser, 
-> mobile or desktop applications, as they are not able to keep their credentials secret.
+> 这意味着**您不能将客户端凭证授权用于公共应用程序**，如浏览器、
+> 移动或桌面应用程序，因为它们无法保持其凭证的秘密性。
 
-## Interactive flows
+## 交互式流程
 
-### Authorization code flow (recommended for new applications)
+### 授权码流程（推荐用于新应用程序）
 
-While the authorization code flow is probably the most complicated flow (as it involves both **user-agent redirections and backchannel communication**), it's
-**the recommended flow for any scenario involving end users, whether they log in using a password, a PIN, a smart card or even an external provider**.
-In return for its complexity, this flow has a great advantage when used in server-side applications: the `access_token` cannot be intercepted by the user agent.
+虽然授权码流程可能是最复杂的流程（因为它涉及**用户代理重定向和后端通信**），但它是
+**任何涉及最终用户的场景的推荐流程，无论他们是使用密码、PIN、智能卡还是外部提供商登录**。
+作为其复杂性的回报，此流程在服务器端应用程序中使用时有一个很大的优势：`access_token` 不能被用户代理拦截。
 
-There are basically 2 steps in the authorization code flow: the authorization request/response and the token request/response.
+授权码流程基本上有 2 个步骤：授权请求/响应和令牌请求/响应。
 
-![Authorization code flow](choosing-the-right-flow/authorization-code-flow.png)
+![授权码流程](choosing-the-right-flow/authorization-code-flow.png)
 
-- **Step 1: the authorization request**
+- **步骤 1：授权请求**
 
-In this flow, the client application always initiates the authentication process by generating an authorization request including
-the mandatory `response_type=code` parameter, its `client_id`, its `redirect_uri` and optionally, a `scope` and a `state` parameter
-[that allows flowing custom data and helps mitigate XSRF attacks](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest).
+在此流程中，客户端应用程序始终通过生成包含
+强制性 `response_type=code` 参数、其 `client_id`、其 `redirect_uri` 以及可选的 `scope` 和 `state` 参数的授权请求来启动认证过程
+[这些参数允许传递自定义数据并帮助缓解 XSRF 攻击](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest)。
 
 > [!NOTE]
-> In most cases, the client application will simply return a 302 response with a `Location` header to redirect the user agent to the authorization endpoint,
-> but depending on the OpenID Connect client you're using, POST requests might also be supported to allow you to send large authorization requests.
-> This feature [is usually implemented using an auto-post HTML form](https://github.com/aspnet/Security/pull/392).
+> 在大多数情况下，客户端应用程序将简单地返回一个带有 `Location` 头的 302 响应，以将用户代理重定向到授权端点，
+> 但根据您使用的 OpenID Connect 客户端，也可能支持 POST 请求，以允许您发送大型授权请求。
+> 此功能[通常使用自动提交的 HTML 表单实现](https://github.com/aspnet/Security/pull/392)。
 
 ```http
 HTTP/1.1 302 Found
@@ -126,13 +124,13 @@ GET /connect/authorize?response_type=code&client_id=s6BhdRkqt3&state=af0ifjsldkj
 Host: server.example.com
 ```
 
-The way the identity provider handles the authorization request is implementation-specific but in most cases, a consent form
-is displayed to ask the user if he or she agrees to share his/her personal data with the client application.
+身份提供商处理授权请求的方式是特定于实现的，但在大多数情况下，会显示一个同意表单
+询问用户是否同意与客户端应用程序共享其个人数据。
 
-![Consent form](choosing-the-right-flow/consent-form.png)
+![同意表单](choosing-the-right-flow/consent-form.png)
 
-When the consent is given, the user agent is redirected back to the client application with **a unique and short-lived token**
-named *authorization code* that the client will be able to exchange with an access token by sending a token request.
+当同意被给予时，用户代理被重定向回客户端应用程序，并带有**一个唯一且短期的令牌**
+名为 *授权码*，客户端将能够通过发送令牌请求来交换访问令牌。
 
 ```http
 HTTP/1.1 302 Found
@@ -140,20 +138,20 @@ Location: https://client.example.org/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifj
 ```
 
 > [!WARNING]
-> To prevent XSRF/session fixation attacks, **the client application MUST ensure that the `state` parameter returned by the identity provider
-> corresponds to the original `state`** and stop processing the authorization response if the two values don't match.
-> [This is usually done by generating a non-guessable string and a corresponding correlation cookie](https://datatracker.ietf.org/doc/html/rfc6749#section-10.12).
+> 为了防止 XSRF/会话固定攻击，**客户端应用程序必须确保身份提供商返回的 `state` 参数
+> 与原始 `state` 相对应**，如果两个值不匹配，则停止处理授权响应。
+> [这通常通过生成一个不可猜测的字符串和相应的关联 cookie 来完成](https://datatracker.ietf.org/doc/html/rfc6749#section-10.12)。
 >
-> This mechanism is fully supported by the OpenIddict client (and cannot be disabled) but may not be supported by third-party clients.
+> 此机制完全由 OpenIddict 客户端支持（且不能禁用），但可能不受第三方客户端支持。
 
-- **Step 2: the token request**
+- **步骤 2：令牌请求**
 
-When the client application gets back an authorization code, it must immediately reedem it for an access token by sending a `grant_type=authorization_code` token request.
+当客户端应用程序获取授权码时，它必须立即通过发送 `grant_type=authorization_code` 令牌请求来兑换访问令牌。
 
 > [!NOTE]
-> To help the identity provider [mitigate counterfeit clients attacks](https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.1.7), the original `redirect_uri` must also be sent.
+> 为了帮助身份提供商[缓解假冒客户端攻击](https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.1.7)，还必须发送原始的 `redirect_uri`。
 >
-> If the client application is a confidential application (i.e an application that has been assigned client credentials), authentication is required.
+> 如果客户端应用程序是机密应用程序（即已分配客户端凭证的应用程序），则需要认证。
 
 ```http
 POST /connect/token HTTP/1.1
@@ -177,20 +175,19 @@ Pragma: no-cache
 ```
 
 > [!NOTE]
-> To increase security, additional parameters such as `code_challenge` and `code_challenge_method` can be specified to bind the authorization code
-> that will be returned by the authorization endpoint to the original authorization request. This mechanism is known as
-> [Proof Key for Code Exchange](../configuration/proof-key-for-code-exchange.md) and is fully supported by OpenIddict. 
+> 为了提高安全性，可以指定额外的参数，如 `code_challenge` 和 `code_challenge_method`，以将授权端点返回的授权码
+> 绑定到原始授权请求。此机制称为[代码交换证明密钥](../configuration/proof-key-for-code-exchange.md)，完全由 OpenIddict 支持。
 
-### Implicit flow (not recommended for new applications)
+### 隐式流程（不推荐用于新应用程序）
 
-The implicit flow is similar to the authorization code flow, **except there's no token request/response step**: the access token is directly returned
-to the client application as part of the authorization response in the URI fragment (or in the request form when using `response_mode=form_post`).
+隐式流程类似于授权码流程，**只是没有令牌请求/响应步骤**：访问令牌直接作为授权响应的一部分在 URI 片段中返回给客户端应用程序
+（或在使用 `response_mode=form_post` 时在请求表单中）。
 
 > [!TIP]
-> When using the OpenID Connect version of the implicit flow, an additional token called *identity token*
-> is returned and can be used by client applications to retrieved standardized information about the user.
+> 使用 OpenID Connect 版本的隐式流程时，会返回一个额外的令牌，称为 *身份令牌*，
+> 客户端应用程序可以使用它来检索关于用户的标准化信息。
 
-![Implicit flow](choosing-the-right-flow/implicit-flow.png)
+![隐式流程](choosing-the-right-flow/implicit-flow.png)
 
 ```http
 GET /connect/authorize?response_type=token&client_id=s6BhdRkqt3&redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb&scope=openid&state=af0ifjsldkj&nonce=n-0S6_WzA2Mj HTTP/1.1
@@ -203,17 +200,17 @@ Location: https://client.example.org/cb#access_token=SlAV32hkKG&token_type=beare
 ```
 
 > [!CAUTION]
-> Initially designed for browser applications, this flow is inherently less secure than the authorization code flow and doesn't support
-> [Proof Key for Code Exchange](https://datatracker.ietf.org/doc/html/rfc7636). As such, using it in new applications is not recommended.
+> 最初为浏览器应用程序设计，此流程本质上不如授权码流程安全，并且不支持
+> [代码交换证明密钥](https://datatracker.ietf.org/doc/html/rfc7636)。因此，不建议在新应用程序中使用它。
 
 > [!WARNING]
-> As for the authorization code flow, **the client application MUST ensure that the `state` parameter returned by the
-> identity provider corresponds to the original `state`** to mitigate XSRF/session fixation attacks.
+> 与授权码流程一样，**客户端应用程序必须确保身份提供商返回的 `state` 参数
+> 与原始 `state` 相对应**，以缓解 XSRF/会话固定攻击。
 
 > [!CAUTION]
-> When using the legacy OAuth 2.0 implicit flow (i.e `response_type=token`), **the client application MUST also ensure that the access token
-> was not issued to another application to prevent [confused deputy attacks](https://stackoverflow.com/a/17439317/542757).**
-> Unfortunately, no standard mechanism is provided in the OAuth 2.0 base specification to implement this security check.
+> 使用传统的 OAuth 2.0 隐式流程（即 `response_type=token`）时，**客户端应用程序还必须确保访问令牌
+> 不是发给另一个应用程序的，以防止[混淆代理人攻击](https://stackoverflow.com/a/17439317/542757)。**
+> 不幸的是，OAuth 2.0 基础规范中没有提供实现此安全检查的标准机制。
 >
-> This is not a problem in the OpenID Connect version of the implicit flow as the `aud` claim returned in the cryptographically-signed
-> JWT identity token can be used to check whether it corresponds to the `client_id` of the client application and detect such attacks.
+> 在 OpenID Connect 版本的隐式流程中这不是问题，因为可以在加密签名的
+> JWT 身份令牌中返回的 `aud` 声明可用于检查它是否对应于客户端应用程序的 `client_id` 并检测此类攻击。

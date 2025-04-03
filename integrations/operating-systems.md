@@ -1,32 +1,26 @@
-# Operating systems integration <Badge type="warning" text="client" />
+# 操作系统集成 <Badge type="warning" text="client" />
 
-To integrate with desktop and mobile operating systems, the OpenIddict client comes with a dedicated package called
-[`OpenIddict.Client.SystemIntegration`](https://www.nuget.org/packages/OpenIddict.Client.SystemIntegration/) that takes
-care of starting the authorization/logout process and handling the callbacks posted to `redirect_uri` or `post_logout_redirect_uri`.
+为了与桌面和移动操作系统集成，OpenIddict 客户端提供了一个专门的包 [`OpenIddict.Client.SystemIntegration`](https://www.nuget.org/packages/OpenIddict.Client.SystemIntegration/)，它负责启动授权/登出流程并处理发送到 `redirect_uri` 或 `post_logout_redirect_uri` 的回调。
 
 > [!IMPORTANT]
-> `OpenIddict.Client.SystemIntegration` leverages the [.NET Generic Host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host)
-> to register the hooks necessary to handle protocol activations and manage the lifetime of the embedded web server. While some application
-> models (e.g WPF or WinForms) offer excellent .NET Generic Host support, it's not always true: in some cases, adapters may be necessary.
+> `OpenIddict.Client.SystemIntegration` 利用 [.NET 通用主机](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host)来注册处理协议激活和管理嵌入式 Web 服务器生命周期所需的钩子。虽然某些应用程序模型（如 WPF 或 WinForms）提供了出色的 .NET 通用主机支持，但情况并非总是如此：在某些情况下，可能需要适配器。
 
 > [!IMPORTANT]
-> This documentation exclusively focuses on the configuration of the OpenIddict system integration and doesn't cover
-> what's needed to use the [.NET Generic Host](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host).
-> For more information on how to configure it, refer to the documentation applicable to your application model.
+> 本文档仅关注 OpenIddict 系统集成的配置，不涵盖使用 [.NET 通用主机](https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host)所需的内容。有关如何配置它的更多信息，请参阅适用于您的应用程序模型的文档。
 
 > [!TIP]
-> You can find samples using the OpenIddict client system integration in the [samples repository](https://github.com/openiddict/openiddict-samples):
+> 您可以在 [示例仓库](https://github.com/openiddict/openiddict-samples) 中找到使用 OpenIddict 客户端系统集成的示例：
 >
-> | Application model      | Supported OS   |                                                                                                                                     |
+> | 应用程序模型      | 支持的操作系统   |                                                                                                                                     |
 > |------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------|
 > | Console                | Windows, Linux | [`Mimban.Client`](https://github.com/openiddict/openiddict-samples/tree/dev/samples/Mimban/Mimban.Client)                           |
 > | WinForms               | Windows        | [`Sorgan.WinForms.Client`](https://github.com/openiddict/openiddict-samples/tree/dev/samples/Sorgan/Sorgan.WinForms.Client)         |
 > | WPF                    | Windows        | [`Sorgan.Wpf.Client`](https://github.com/openiddict/openiddict-samples/tree/dev/samples/Sorgan/Sorgan.Wpf.Client)                   |
 > | Blazor Hybrid (on WPF) | Windows        | [`Sorgan.BlazorHybrid.Client`](https://github.com/openiddict/openiddict-samples/tree/dev/samples/Sorgan/Sorgan.BlazorHybrid.Client) |
 
-## Supported platforms
+## 支持的平台
 
-OpenIddict 6.0+ supports the following operating systems:
+OpenIddict 6.0+ 支持以下操作系统：
   - Android 5.0+ (Android API 21+)
   - iOS 12.0+
   - Linux
@@ -35,73 +29,73 @@ OpenIddict 6.0+ supports the following operating systems:
   - Windows 7 SP1
 
 > [!IMPORTANT]
-> The `OpenIddict.Client.SystemIntegration` package doesn't depend on a specific application model and has been designed to be usable in most types of applications.
+> `OpenIddict.Client.SystemIntegration` 包不依赖于特定的应用程序模型，设计用于大多数类型的应用程序。
 > 
-> That said, two technical aspects limit cases where the OpenIddict client can be used:
->   - **.NET Standard 2.0 support**: OpenIddict depends on packages that require .NET Standard 2.0 support (for instance, the `Microsoft.Extensions.*` packages),
->   which excludes all the applications that run on a limited .NET flavor, like Windows 8's universal apps or UWP applications prior to Windows 10 1809,
->   as these legacy platforms don't expose any of the APIs introduced in .NET Standard 2.0.
+> 然而，有两个技术方面限制了可以使用 OpenIddict 客户端的情况：
+>   - **.NET Standard 2.0 支持**：OpenIddict 依赖于需要 .NET Standard 2.0 支持的包（例如 `Microsoft.Extensions.*` 包），
+>   这排除了所有运行在受限 .NET 版本上的应用程序，如 Windows 8 的通用应用或 Windows 10 1809 之前的 UWP 应用程序，
+>   因为这些旧平台不公开 .NET Standard 2.0 中引入的任何 API。
 > 
->   - **.NET Generic Host support**: while the .NET Generic Host can be theoretically used in any application that can target .NET Standard 2.0, not all
->   application models will offer a perfect experience:
->     - Windows and Linux .NET console applications don't need anything specific as the .NET Generic Host already ships with a built-in `.UseConsoleLifetime()`
->     extension that takes care of managing the lifetime of the host (typically, by listening to `CTRL+C` combinations and `SIGTERM` events).
+>   - **.NET 通用主机支持**：虽然 .NET 通用主机理论上可以在任何可以面向 .NET Standard 2.0 的应用程序中使用，但并非所有
+>   应用程序模型都会提供完美的体验：
+>     - Windows 和 Linux 的 .NET 控制台应用程序不需要任何特定内容，因为 .NET 通用主机已经内置了 `.UseConsoleLifetime()`
+>     扩展，负责管理主机的生命周期（通常通过监听 `CTRL+C` 组合键和 `SIGTERM` 事件）。
 > 
->     - WinForms and Windows Presentation Foundation applications can reference the 
->     [Dapplo.Microsoft.Extensions.Hosting.WinForms](https://www.nuget.org/packages/Dapplo.Microsoft.Extensions.Hosting.WinForms/) and
->     [Dapplo.Microsoft.Extensions.Hosting.Wpf](https://www.nuget.org/packages/Dapplo.Microsoft.Extensions.Hosting.Wpf/) packages
->     developed by [Robin Krom](https://github.com/Lakritzator): the result is both very clean and perfectly integrated.
+>     - WinForms 和 Windows Presentation Foundation 应用程序可以引用 
+>     [Dapplo.Microsoft.Extensions.Hosting.WinForms](https://www.nuget.org/packages/Dapplo.Microsoft.Extensions.Hosting.WinForms/) 和
+>     [Dapplo.Microsoft.Extensions.Hosting.Wpf](https://www.nuget.org/packages/Dapplo.Microsoft.Extensions.Hosting.Wpf/) 包
+>     （由 [Robin Krom](https://github.com/Lakritzator) 开发）：结果既非常干净又完美集成。
 > 
->     - While there's currently no .NET Generic Host companion package for WinUI 3 applications,
->     a pull request proposed by [Jöra Malek](https://github.com/AliveDevil) should address that in the future:
->     [Implement WinUI](https://github.com/dapplo/Dapplo.Microsoft.Extensions.Hosting/pull/37).
+>     - 虽然目前没有 .NET 通用主机的 WinUI 3 应用程序配套包，
+>     但 [Jöra Malek](https://github.com/AliveDevil) 提出的拉取请求应该会在未来解决这个问题：
+>     [实现 WinUI](https://github.com/dapplo/Dapplo.Microsoft.Extensions.Hosting/pull/37)。
 > 
->     - There's currently no integration for WinUI 2/UWP applications, which makes using the .NET Generic Host more complicated.
->     There are also other annoying limitations, like Entity Framework Core not fully supporting UWP.
+>     - 目前没有 WinUI 2/UWP 应用程序的集成，这使得使用 .NET 通用主机更加复杂。
+>     还有其他令人烦恼的限制，比如 Entity Framework Core 不完全支持 UWP。
 > 
 >     > [!WARNING]
->     > Since Microsoft halted the development of the UWP platform, using the OpenIddict client in UWP applications
->     > should be reserved to developers who are familiar with UWP and its inherent limitations.
+>     > 由于微软停止了 UWP 平台的开发，在 UWP 应用程序中使用 OpenIddict 客户端
+>     > 应该仅限于熟悉 UWP 及其固有限制的开发人员。
 > 
->     - While it features an application builder that is inspired by the .NET Generic Host, MAUI doesn't support any of the .NET Generic Host
->     abstractions, like `IHostedService` or `IHostApplicationLifetime` (that are required by the OpenIddict system integration).
+>     - 虽然它有一个受 .NET 通用主机启发的应用程序构建器，但 MAUI 不支持任何 .NET 通用主机
+>     抽象，如 `IHostedService` 或 `IHostApplicationLifetime`（这些是 OpenIddict 系统集成所需的）。
 > 
 >     > [!IMPORTANT]
->     > The MAUI team [is already aware of this limitation](https://github.com/dotnet/maui/issues/2244). In the meantime,
->     > it is possible to work around that by using `IHostedService`/`IHostApplicationLifetime` adapters, as shown in this engineering sample:
->     > [OpenIddict.Sandbox.Maui.Client](https://github.com/openiddict/openiddict-core/tree/dev/sandbox/OpenIddict.Sandbox.Maui.Client).
+>     > MAUI 团队[已经意识到这个限制](https://github.com/dotnet/maui/issues/2244)。在此期间，
+>     > 可以通过使用 `IHostedService`/`IHostApplicationLifetime` 适配器来解决这个问题，如这个工程示例所示：
+>     > [OpenIddict.Sandbox.Maui.Client](https://github.com/openiddict/openiddict-core/tree/dev/sandbox/OpenIddict.Sandbox.Maui.Client)。
 > 
->     - Similarly to MAUI, [Avalonia UI doesn't natively support the .NET Generic Host](https://github.com/AvaloniaUI/Avalonia/issues/5241),
->     but it should be possible to use it side-by-side with the regular Avalania UI host model.
+>     - 与 MAUI 类似，[Avalonia UI 不原生支持 .NET 通用主机](https://github.com/AvaloniaUI/Avalonia/issues/5241)，
+>     但应该可以将其与常规的 Avalonia UI 主机模型一起使用。
 
 ### Android
 
-The OpenIddict Android integration requires targeting `net8.0-android34.0` (or higher) but can be used in any application running on Android 5.0+ (Android API 21).
+OpenIddict Android 集成需要面向 `net8.0-android34.0`（或更高版本），但可以在任何运行在 Android 5.0+ (Android API 21) 上的应用程序中使用。
 
 ### iOS
 
-The OpenIddict iOS integration requires targeting `net8.0-ios17.5` (or higher) but can be used in any application running on iOS 12.0+.
+OpenIddict iOS 集成需要面向 `net8.0-ios17.5`（或更高版本），但可以在任何运行在 iOS 12.0+ 上的应用程序中使用。
 
 ### Mac Catalyst
 
-The OpenIddict Mac Catalyst integration requires targeting `net8.0-maccatalyst17.5` (or higher) but can be used in any application running on Mac Catalyst 13.1+.
+OpenIddict Mac Catalyst 集成需要面向 `net8.0-maccatalyst17.5`（或更高版本），但可以在任何运行在 Mac Catalyst 13.1+ 上的应用程序中使用。
 
 ### macOS
 
-The OpenIddict macOS integration requires targeting `net8.0-macos14.5` (or higher) but can be used in any application running on macOS 10.15+.
+OpenIddict macOS 集成需要面向 `net8.0-macos14.5`（或更高版本），但可以在任何运行在 macOS 10.15+ 上的应用程序中使用。
 
 ### Windows
 
-The OpenIddict Windows integration can be used in any application running on Windows 7 SP1+ and is compatible with the following frameworks:
-  - `net461` (or higher)
-  - `uap10.0.17763` (or higher)
-  - `net6.0-windows7.0` (or higher)
-  - `net6.0-windows10.0.17763` (or higher)
+OpenIddict Windows 集成可以在任何运行在 Windows 7 SP1+ 上的应用程序中使用，并且与以下框架兼容：
+  - `net461`（或更高版本）
+  - `uap10.0.17763`（或更高版本）
+  - `net6.0-windows7.0`（或更高版本）
+  - `net6.0-windows10.0.17763`（或更高版本）
 
 > [!IMPORTANT]
-> The ability to use the OpenIddict system integration package with a specific application model depends on the .NET runtime version and the Windows version:
+> 使用 OpenIddict 系统集成包与特定应用程序模型的能力取决于 .NET 运行时版本和 Windows 版本：
 > 
-> | Windows version | .NET runtime version | Console            | WinForms           | WPF                | WinUI 2   | WinUI 3   | MAUI      |
+> | Windows 版本 | .NET 运行时版本 | 控制台            | WinForms           | WPF                | WinUI 2   | WinUI 3   | MAUI      |
 > |-----------------|----------------------|--------------------|--------------------|--------------------|-----------|-----------|-----------|
 > | Windows 7 SP1   | .NET Framework 4.6.2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:       | :x:       | :x:       |
 > | Windows 7 SP1   | .NET Framework 4.7.2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:       | :x:       | :x:       |
@@ -143,54 +137,53 @@ The OpenIddict Windows integration can be used in any application running on Win
 > | Windows 11 21H2 | .NET Native/UAP      | :x:                | :x:                | :x:                | :warning: | :x:       | :x:       |
 > 
 > > [!TIP]
-> > WinRT support is only offered when targeting `net461`, `uap10.0.17763` or `net6.0-windows10.0.17763`:
-> > the `net6.0-windows7.0` target framework moniker doesn't reference the WinRT APIs.
+> > WinRT 支持仅在面向 `net461`、`uap10.0.17763` 或 `net6.0-windows10.0.17763` 时提供：
+> > `net6.0-windows7.0` 目标框架标记符不引用 WinRT API。
 > 
 > > [!WARNING]
-> > Microsoft officially stopped supporting Windows 7 in .NET 7.0. As such, applications that still need to be usable on Windows 7
-> > should probably stay on .NET Framework 4.8 (or .NET 6.0, but it should be noted that it will reach EoL in November 2024).
+> > 微软官方在 .NET 7.0 中停止了对 Windows 7 的支持。因此，仍需要在 Windows 7 上使用的应用程序
+> > 应该可能停留在 .NET Framework 4.8（或 .NET 6.0，但应该注意它将在 2024 年 11 月达到 EoL）。
 
-## Supported interaction methods
+## 支持的交互方法
 
-The OpenIddict client system integration supports multiple types of interaction methods to start login and logout demands:
+OpenIddict 客户端系统集成支持多种类型的交互方法来启动登录和登出请求：
 
-### System browser
+### 系统浏览器
 
-The system browser is the default interaction method used by OpenIddict on Linux and Windows: it is a safe and convenient option that natively
-supports single-sign-on (SSO) since the authentication cookie used by the authorization server is persisted and managed by the browser itself.
+系统浏览器是 OpenIddict 在 Linux 和 Windows 上使用的默认交互方法：它是一个安全且方便的选择，原生
+支持单点登录（SSO），因为授权服务器使用的身份验证 cookie 由浏览器本身持久化和管理。
 
 > [!TIP]
-> When using the system browser, the configured `redirect_uri` and `post_logout_redirect_uri` can either point to a custom URI scheme
-> (see [Protocol activations managed by the OS](#protocol-activations-managed-by-the-os))
-> or to the embedded web server (see [Embedded web server](#embedded-web-server)).
+> 使用系统浏览器时，配置的 `redirect_uri` 和 `post_logout_redirect_uri` 可以指向自定义 URI 方案
+> （参见[由操作系统管理的协议激活](#由操作系统管理的协议激活)）
+> 或嵌入式 Web 服务器（参见[嵌入式 Web 服务器](#嵌入式-web-服务器)）。
 
-### Web authentication broker
+### Web 身份验证代理
 
-While not recommended in most cases, the [`WebAuthenticationBroker` API](https://learn.microsoft.com/en-us/windows/uwp/security/web-authentication-broker)
-is supported on UWP.
+虽然在大多数情况下不推荐，但在 UWP 上支持 [`WebAuthenticationBroker` API](https://learn.microsoft.com/en-us/windows/uwp/security/web-authentication-broker)。
 
 > [!WARNING]
-> `WebAuthenticationBroker` is only supported on WinUI 2.0/UWP applications and cannot be used in WinUI 3.0 applications.
+> `WebAuthenticationBroker` 仅在 WinUI 2.0/UWP 应用程序中受支持，不能在 WinUI 3.0 应用程序中使用。
 
-### AS Web authentication session
+### AS Web 身份验证会话
 
-[`ASWebAuthenticationSession`](https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession) is supported on iOS,
-macOS and Mac Catalyst and is the default option when running on these platforms as it offers a great user experience and an excellent security level.
+[`ASWebAuthenticationSession`](https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession) 在 iOS、
+macOS 和 Mac Catalyst 上受支持，并且在这些平台上作为默认选项，因为它提供了出色的用户体验和优秀的安全级别。
 
 > [!IMPORTANT]
-> When using `ASWebAuthenticationSession`, the configured `redirect_uri` and `post_logout_redirect_uri` MUST point to a custom URI scheme.
+> 使用 `ASWebAuthenticationSession` 时，配置的 `redirect_uri` 和 `post_logout_redirect_uri` 必须指向自定义 URI 方案。
 
-### Custom tabs intents
+### 自定义标签页意图
 
-On Android, the OpenIddict client system integration supports the
-[`CustomTabsIntent` API](https://developer.android.com/reference/androidx/browser/customtabs/CustomTabsIntent) to initiate authorization and logout demands
-and uses it as the default option, as it offers both a good user experience and a good security level.
+在 Android 上，OpenIddict 客户端系统集成支持
+[`CustomTabsIntent` API](https://developer.android.com/reference/androidx/browser/customtabs/CustomTabsIntent) 来启动授权和登出请求
+并将其作为默认选项使用，因为它既提供了良好的用户体验又提供了良好的安全级别。
 
 > [!WARNING]
-> Unlike iOS's `ASWebAuthenticationSession` API, using `CustomTabsIntent` requires writing a custom activity
-> with an intent filter containing the URI scheme you use for your application to handle the callback requests.
+> 与 iOS 的 `ASWebAuthenticationSession` API 不同，使用 `CustomTabsIntent` 需要编写一个自定义活动
+> 和一个包含用于应用程序处理回调请求的 URI 方案的意图过滤器。
 >
-> Here's an example using MAUI's `IPlatformApplication` API to resolve the `OpenIddictClientSystemIntegrationService` mediator:
+> 以下是使用 MAUI 的 `IPlatformApplication` API 来解析 `OpenIddictClientSystemIntegrationService` 中介的示例：
 > 
 > ```csharp
 > [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
@@ -225,76 +218,73 @@ and uses it as the default option, as it offers both a good user experience and 
 > }
 > ```
 
-## Supported callback methods
+## 支持的回调方法
 
-The OpenIddict client system integration supports 2 methods to handle post-login and post-logout redirection callbacks
-that are not handled by iOS's `ASWebAuthenticationSession`, UWP's `WebAuthenticationBroker` or Android's `CustomTabsIntent`:
+OpenIddict 客户端系统集成支持 2 种方法来处理不由 iOS 的 `ASWebAuthenticationSession`、UWP 的 `WebAuthenticationBroker` 或 Android 的 `CustomTabsIntent` 处理的登录后和登出后重定向回调：
 
-### Protocol activations managed by the OS
+### 由操作系统管理的协议激活
 
 > [!TIP]
-> Protocol activations managed by the OS typically use a custom URI scheme (e.g `com.contoso.client:/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz`).
+> 由操作系统管理的协议激活通常使用自定义 URI 方案（例如 `com.contoso.client:/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=xyz`）。
 
-To use OS-managed protocol activations, at least one custom URI scheme must be registered with the OS:
-  - For packaged Windows applications (e.g UWP applications or packaged WinForms/WPF/WinUI 3 applications), it is generally
-  done by declaring the desired URI scheme in the application manifest (e.g `<uap:Protocol Name="com.contoso.client"/>`).
+要使用操作系统管理的协议激活，必须至少向操作系统注册一个自定义 URI 方案：
+  - 对于打包的 Windows 应用程序（例如 UWP 应用程序或打包的 WinForms/WPF/WinUI 3 应用程序），通常
+  通过在应用程序清单中声明所需的 URI 方案来完成（例如 `<uap:Protocol Name="com.contoso.client"/>`）。
 
   > [!TIP]
-  > For more information, see
-  > [Handle URI activation](https://learn.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation#step-1-specify-the-extension-point-in-the-package-manifest).
+  > 有关更多信息，请参阅
+  > [处理 URI 激活](https://learn.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation#step-1-specify-the-extension-point-in-the-package-manifest)。
 
-  - For non-packaged Windows applications (e.g traditional Win32 WinForms/WPF applications), by adding a registry entry
-  for the desired URI scheme pointing to the executable that will be launched to handle the protocol activation:
-      - [Globally, under `HKEY_CLASSES_ROOT`](https://stackoverflow.com/questions/80650/how-do-i-register-a-custom-url-protocol-in-windows)
-      (since it requires administrator rights, this would be typically done at the setup stage by the application installer).
-      - [Per user, under `HKEY_CURRENT_USER\SOFTWARE\Classes`](https://stackoverflow.com/questions/60545581/oauth-2-0-authorization-for-windows-desktop-application-using-httplistener).
+  - 对于非打包的 Windows 应用程序（例如传统的 Win32 WinForms/WPF 应用程序），通过为
+  所需的 URI 方案添加指向将启动以处理协议激活的可执行文件的注册表项：
+      - [全局地，在 `HKEY_CLASSES_ROOT` 下](https://stackoverflow.com/questions/80650/how-do-i-register-a-custom-url-protocol-in-windows)
+      （由于需要管理员权限，这通常会在应用程序安装程序的安装阶段完成）。
+      - [每个用户，在 `HKEY_CURRENT_USER\SOFTWARE\Classes` 下](https://stackoverflow.com/questions/60545581/oauth-2-0-authorization-for-windows-desktop-application-using-httplistener)。
 
-  - For Linux applications, by adding a `[Desktop Entry]`. For more information,
-  see [Create a custom URL Protocol Handler](https://unix.stackexchange.com/questions/497146/create-a-custom-url-protocol-handler).
+  - 对于 Linux 应用程序，通过添加 `[Desktop Entry]`。有关更多信息，
+  请参阅[创建自定义 URL 协议处理程序](https://unix.stackexchange.com/questions/497146/create-a-custom-url-protocol-handler)。
 
 > [!TIP]
-> To extract and handle protocol activations transparently in multi-instance applications, OpenIddict implements a blocking `IHostedService` that determines
-> whether the current application instance was created to react to a protocol activation (either using the WinRT
+> 为了在多实例应用程序中透明地提取和处理协议激活，OpenIddict 实现了一个阻塞的 `IHostedService`，它确定
+> 当前应用程序实例是否是为了响应协议激活而创建的（要么使用 WinRT
 > [`AppInstance.GetActivatedEventArgs()` API](https://learn.microsoft.com/en-us/uwp/api/windows.applicationmodel.appinstance.getactivatedeventargs?view=winrt-22621)
-> or by extracting the protocol activation URI from the command line arguments).
+> 要么通过从命令行参数中提取协议激活 URI）。
 >
-> If so, it invokes the OpenIddict client pipeline to handle the authorization response:
-> once the response is validated, it is redirected to the correct instance (whose identifier is stored in the state token) and the current instance is terminated.
+> 如果是这样，它会调用 OpenIddict 客户端管道来处理授权响应：
+> 一旦响应被验证，它就会被重定向到正确的实例（其标识符存储在状态令牌中），并且当前实例被终止。
 
 > [!TIP]
-> To handle authorization responses redirected by other instances, it also implements a background `IHostedService` that
-> waits for inter-process notifications to be posted to a named pipe. Once the authorization response is transferred, it
-> is validated and the call to `AuthenticateInteractivelyAsync()` returns the final response with the authentication details.
+> 为了处理由其他实例重定向的授权响应，它还实现了一个后台 `IHostedService`，它
+> 等待将进程间通知发布到命名管道。一旦授权响应被传输，它
+> 被验证并且对 `AuthenticateInteractivelyAsync()` 的调用返回带有身份验证详细信息的最终响应。
 
-### Embedded web server
+### 嵌入式 Web 服务器
 
-For scenarios where registering a protocol handler registration is not possible or practical, it is possible to use the embedded HTTP web server
-that ships with `OpenIddict.Client.SystemIntegration`: when the application starts, OpenIddict automatically select the first port available in the
-`49152-65535` range and starts listening to callback HTTP requests sent to `localhost` (pretty much like how that would work with
-`OpenIddict.Client.AspNetCore` or `OpenIddict.Client.Owin`).
-
-> [!IMPORTANT]
-> When using the embedded web server to process callback requests, the `redirect_uri`/`post_logout_redirect_uri` MUST point to `http://localhost/`:
-> if the remote authorization server supports dynamic ports and the client application was declared as a native application, the port doesn't need
-> to be specified: in this case, OpenIddict will attach the port assigned to the embedded web server to the `redirect_uri`/`post_logout_redirect_uri`
-> parameters before the login/logout requests are sent to the authorization server.
-
-## Basic configuration
+对于无法或不方便注册协议处理程序的情况，可以使用随 `OpenIddict.Client.SystemIntegration` 一起提供的嵌入式 HTTP Web 服务器：
+当应用程序启动时，OpenIddict 会自动选择 `49152-65535` 范围内的第一个可用端口，并开始监听发送到 `localhost` 的回调 HTTP 请求
+（很像 `OpenIddict.Client.AspNetCore` 或 `OpenIddict.Client.Owin` 的工作方式）。
 
 > [!IMPORTANT]
-> Being an extension to the OpenIddict client, the OpenIddict system integration requires a properly configured client.
+> 使用嵌入式 Web 服务器处理回调请求时，`redirect_uri`/`post_logout_redirect_uri` 必须指向 `http://localhost/`：
+> 如果远程授权服务器支持动态端口并且客户端应用程序被声明为本机应用程序，则不需要
+> 指定端口：在这种情况下，OpenIddict 将在登录/登出请求发送到授权服务器之前将分配给嵌入式 Web 服务器的端口附加到 `redirect_uri`/`post_logout_redirect_uri` 参数。
+
+## 基本配置
+
+> [!IMPORTANT]
+> 作为 OpenIddict 客户端的扩展，OpenIddict 系统集成需要一个正确配置的客户端。
 >
-> For more information on how to get started with the OpenIddict client,
-> read [Integrating with a remote server instance](/guides/getting-started/integrating-with-a-remote-server-instance.md).
+> 有关如何开始使用 OpenIddict 客户端的更多信息，
+> 请阅读[与远程服务器实例集成](/guides/getting-started/integrating-with-a-remote-server-instance.md)。
 
-To configure the operating system integration, you'll need to:
-  - **Reference the `OpenIddict.Client.SystemIntegration` package**:
+要配置操作系统集成，您需要：
+  - **引用 `OpenIddict.Client.SystemIntegration` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.Client.SystemIntegration" Version="6.2.0" />
   ```
 
-  - **Call `UseSystemIntegration()` in the client options**:
+  - **在客户端选项中调用 `UseSystemIntegration()`**：
 
   ```csharp
   services.AddOpenIddict()
@@ -306,12 +296,12 @@ To configure the operating system integration, you'll need to:
       });
   ```
 
-  - **Review your `redirect_uri`/`post_logout_redirect_uri`**:
+  - **检查您的 `redirect_uri`/`post_logout_redirect_uri`**：
 
   > [!IMPORTANT]
-  > By default, the OpenIddict client system integration uses `http://localhost/` as the base URI: this works well when using the
-  > embedded web server on Linux and Windows with a remote authorization server supporting dynamic ports, but on iOS, macOS and Android,
-  > you're expected to use custom URI schemes to be able to use `ASWebAuthenticationSession` or `CustomTabsIntent`:
+  > 默认情况下，OpenIddict 客户端系统集成使用 `http://localhost/` 作为基础 URI：这在 Linux 和 Windows 上使用
+  > 嵌入式 Web 服务器与支持动态端口的远程授权服务器一起使用时效果很好，但在 iOS、macOS 和 Android 上，
+  > 您需要使用自定义 URI 方案才能使用 `ASWebAuthenticationSession` 或 `CustomTabsIntent`：
 
   ```csharp
   services.AddOpenIddict()
@@ -319,7 +309,7 @@ To configure the operating system integration, you'll need to:
       {
           // ...
 
-          // Add a client registration matching the client application definition in the server project.
+          // 添加与服务器项目中的客户端应用程序定义匹配的客户端注册。
           options.AddRegistration(new OpenIddictClientRegistration
           {
               Issuer = new Uri("https://localhost:44395/", UriKind.Absolute),
@@ -327,70 +317,70 @@ To configure the operating system integration, you'll need to:
 
               ClientId = "maui",
 
-              // This sample uses protocol activations with a custom URI scheme to handle callbacks.
+              // 此示例使用带有自定义 URI 方案的协议激活来处理回调。
               //
-              // For more information on how to construct private-use URI schemes,
-              // read https://www.rfc-editor.org/rfc/rfc8252#section-7.1 and
-              // https://www.rfc-editor.org/rfc/rfc7595#section-3.8.
+              // 有关如何构造私有使用 URI 方案的更多信息，
+              // 请阅读 https://www.rfc-editor.org/rfc/rfc8252#section-7.1 和
+              // https://www.rfc-editor.org/rfc/rfc7595#section-3.8。
               PostLogoutRedirectUri = new Uri("com.openiddict.sandbox.maui.client:/callback/logout/local", UriKind.Absolute),
               RedirectUri = new Uri("com.openiddict.sandbox.maui.client:/callback/login/local", UriKind.Absolute),
 
               Scopes = { Scopes.Email, Scopes.Profile, Scopes.OfflineAccess, "demo_api" }
           });
 
-          // Register the Web providers integrations.
+          // 注册 Web 提供程序集成。
           //
-          // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
-          // address per provider, unless all the registered providers support returning an "iss"
-          // parameter containing their URL as part of authorization responses. For more information,
-          // see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
+          // 注意：为了减轻混合攻击，建议每个提供程序使用唯一的重定向端点
+          // 地址，除非所有注册的提供程序都支持在授权响应中返回包含其 URL 的 "iss"
+          // 参数。有关更多信息，
+          // 请参阅 https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4。
           options.UseWebProviders()
                  .AddTwitter(options =>
                  {
                      options.SetClientId("bXgwc0U3N3A3YWNuaWVsdlRmRWE6MTpjaQ")
-                             // Note: Twitter doesn't support the recommended ":/" syntax and requires using "://".
+                             // 注意：Twitter 不支持推荐的 ":/" 语法，需要使用 "://"。
                             .SetRedirectUri("com.openiddict.sandbox.maui.client://callback/login/twitter");
                  });
       });
   ```
 
-Once configured, you can resolve `OpenIddictClientService` from the dependency injection container and use the
-`ChallengeInteractivelyAsync()` and `AuthenticateInteractivelyAsync()` APIs to start an interactive authentication process:
+配置完成后，您可以从依赖注入容器中解析 `OpenIddictClientService` 并使用
+`ChallengeInteractivelyAsync()` 和 `AuthenticateInteractivelyAsync()` API 来启动交互式身份验证过程：
 
 ```csharp
 try
 {
-    // Ask OpenIddict to initiate the authentication
-    // flow (typically, by starting the system browser).
+    // 要求 OpenIddict 启动身份验证
+    // 流程（通常，通过启动系统浏览器）。
     var result = await _service.ChallengeInteractivelyAsync(new()
     {
         ProviderName = provider
     });
 
-    // Wait for the user to complete the authorization process.
+    // 等待用户完成授权过程。
     var response = await _service.AuthenticateInteractivelyAsync(new()
     {
         Nonce = result.Nonce
     });
 
-    MessageBox.Show($"Welcome, {response.Principal.FindFirst(ClaimTypes.Name)!.Value}.",
-        "Authentication successful", MessageBoxButton.OK, MessageBoxImage.Information);
+    MessageBox.Show($"欢迎，{response.Principal.FindFirst(ClaimTypes.Name)!.Value}。",
+        "身份验证成功", MessageBoxButton.OK, MessageBoxImage.Information);
 }
 
 catch (ProtocolException exception) when (exception.Error is Errors.AccessDenied)
 {
-    MessageBox.Show("The authorization was denied by the end user.",
-        "Authorization denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    MessageBox.Show("最终用户拒绝了授权。",
+        "授权被拒绝", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 }
 ```
 
-## Advanced configuration
+## 高级配置
 
-### Non-default interaction methods
+### 非默认交互方法
 
-OpenIddict automatically selects the best interaction method to use depending on the operating system on which the application is running.
+OpenIddict 根据应用程序运行的操作系统自动选择要使用的最佳交互方法。
 
-While using the default method is recommended, it is possible to force OpenIddict to use a specific method:
+虽然使用默认方法被推荐，但可以强制 OpenIddict 使用特定方法：
 
 ```csharp
 services.AddOpenIddict()
@@ -429,12 +419,12 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> OpenIddict will throw a `PlatformNotSupportedException` if the method you selected isn't supported by the platform.
+> 如果您选择的方法不受平台支持，OpenIddict 将抛出 `PlatformNotSupportedException`。
 
-### Activation handling and redirection
+### 激活处理和重定向
 
-On Linux and Windows, OpenIddict automatically processes protocol activations and redirects them to the correct instance
-of your application if necessary. While not recommended, this mechanism can also be explicitly enabled on other platforms:
+在 Linux 和 Windows 上，OpenIddict 自动处理协议激活并将其重定向到正确的实例
+（如果需要）。虽然不推荐，但此机制也可以在其他平台上显式启用：
 
 ```csharp
 services.AddOpenIddict()
@@ -446,7 +436,7 @@ services.AddOpenIddict()
     });
 ```
 
-Both protocol activation handling and redirection can be explicitly disabled on Linux and Windows if necessary:
+如果需要，可以在 Linux 和 Windows 上显式禁用协议激活处理和重定向：
 
 ```csharp
 services.AddOpenIddict()
@@ -458,10 +448,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Pipe options and security
+### 管道选项和安全性
 
-Redirection of protocol activations uses named pipes. The default options and ACL applied to the created pipe server and client
-can be overridden using the `SetPipeName()`, `SetPipeOptions()` and `SetPipeSecurity()` APIs:
+协议激活的重定向使用命名管道。可以使用 `SetPipeName()`、`SetPipeOptions()` 和 `SetPipeSecurity()` API 覆盖
+应用于创建的管道服务器和客户端的默认选项和 ACL：
 
 ```csharp
 services.AddOpenIddict()
@@ -475,13 +465,13 @@ services.AddOpenIddict()
 ```
 
 > [!TIP]
-> The default pipe ACL on Windows allows communication between non-elevated processed and evalated processes running
-> under the same user account. You can override that using the `SetPipeSecurity()` API if the default policy is not adequate.
+> Windows 上的默认管道 ACL 允许非提升进程和在同一用户帐户下运行的提升进程之间进行通信。
+> 如果默认策略不合适，您可以使用 `SetPipeSecurity()` API 覆盖它。
 
-### HTTP requests handling by the embedded web server
+### 嵌入式 Web 服务器处理 HTTP 请求
 
-On Linux and Windows, OpenIddict automatically starts an embedded HTTP server to process callbacks pointing to `localhost`.
-While not recommended, this mechanism can also be explicitly enabled on other platforms:
+在 Linux 和 Windows 上，OpenIddict 自动启动嵌入式 HTTP 服务器来处理指向 `localhost` 的回调。
+虽然不推荐，但此机制也可以在其他平台上显式启用：
 
 ```csharp
 services.AddOpenIddict()
@@ -492,7 +482,7 @@ services.AddOpenIddict()
     });
 ```
 
-The embedded web server can be explicitly disabled on Linux and Windows if necessary:
+如果需要，可以在 Linux 和 Windows 上显式禁用嵌入式 Web 服务器：
 
 ```csharp
 services.AddOpenIddict()
@@ -503,8 +493,8 @@ services.AddOpenIddict()
     });
 ```
 
-If the remote authorization server doesn't support native applications or doesn't allow using dynamic ports,
-you can also specify an ordered list of ports that OpenIddict will try to use when starting the embedded web server:
+如果远程授权服务器不支持本机应用程序或不允许使用动态端口，
+您还可以指定 OpenIddict 在启动嵌入式 Web 服务器时将尝试使用的有序端口列表：
 
 ```csharp
 services.AddOpenIddict()

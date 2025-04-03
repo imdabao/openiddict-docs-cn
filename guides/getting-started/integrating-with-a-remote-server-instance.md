@@ -1,45 +1,42 @@
-# Integrating with a remote server instance <Badge type="warning" text="client" />
+# 与远程服务器实例集成 <Badge type="warning" text="client" />
 
-The OpenIddict client is a universal OAuth 2.0/OpenID Connect .NET client that can be used in both web applications
-(ASP.NET 4.6.1+ or ASP.NET Core 2.1+ required) or desktop applications (.NET 4.6.1+ or .NET 6.0+ required).
+OpenIddict 客户端是一个通用的 OAuth 2.0/OpenID Connect .NET 客户端，可用于 Web 应用程序
+(需要 ASP.NET 4.6.1+ 或 ASP.NET Core 2.1+) 或桌面应用程序 (需要 .NET 4.6.1+ 或 .NET 6.0+)。
 
 > [!NOTE]
-> Most of the settings apply to both web and desktop applications but interactive flows like the
-> code or implicit flows require a specific integration depending on the type of application.
+> 大多数设置同时适用于 Web 和桌面应用程序，但交互式流程（如代码或隐式流程）需要根据应用程序类型进行特定集成。
 
-## Implement a non-interactive OAuth 2.0 client in any .NET application:
+## 在任何 .NET 应用程序中实现非交互式 OAuth 2.0 客户端：
 
-Non-interactive flows like the resource owner password credentials (ROPC) or client credentials are implemented the same way
-in web and desktop applications. If you want to use a non-interactive flow like the client credentials flow, you'll need to:
+非交互式流程（如资源所有者密码凭据 (ROPC) 或客户端凭据）在 Web 和桌面应用程序中的实现方式相同。如果要使用非交互式流程（如客户端凭据流程），您需要：
 
-  - **Have an existing project or create a new one**: using the .NET generic host is recommended but not mandatory for non-interactive
-  flows. In any case, you'll need to use dependency injection (`Microsoft.Extensions.DependencyInjection` or another DI container).
+  - **拥有现有项目或创建新项目**：对于非交互式流程，建议使用 .NET 通用主机，但不是必需的。无论如何，您都需要使用依赖注入（`Microsoft.Extensions.DependencyInjection` 或其他 DI 容器）。
 
-  - **Update your `.csproj` file** to reference the latest `OpenIddict` package:
+  - **更新 `.csproj` 文件** 以引用最新的 `OpenIddict` 包：
 
     ```xml
     <PackageReference Include="OpenIddict" Version="6.2.0" />
     ```
 
-  - **Configure the OpenIddict client services** in `Program.cs` (or `Startup.cs` if you use the regular ASP.NET Core web host):
+  - **在 `Program.cs` 中配置 OpenIddict 客户端服务**（如果使用常规 ASP.NET Core Web 主机，则在 `Startup.cs` 中）：
 
     ```csharp
     services.AddOpenIddict()
 
-        // Register the OpenIddict client components.
+        // 注册 OpenIddict 客户端组件。
         .AddClient(options =>
         {
-            // Allow grant_type=client_credentials to be negotiated.
+            // 允许协商 grant_type=client_credentials。
             options.AllowClientCredentialsFlow();
 
-            // Disable token storage, which is not necessary for non-interactive flows like
-            // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
+            // 禁用令牌存储，这对于非交互式流程（如
+            // grant_type=password、grant_type=client_credentials 或 grant_type=refresh_token）不是必需的。
             options.DisableTokenStorage();
 
-            // Register the System.Net.Http integration.
+            // 注册 System.Net.Http 集成。
             options.UseSystemNetHttp();
 
-            // Add a client registration with the client identifier and secrets issued by the server.
+            // 添加客户端注册，包含服务器颁发的客户端标识符和密钥。
             options.AddRegistration(new OpenIddictClientRegistration
             {
                 Issuer = new Uri("https://localhost:44385/", UriKind.Absolute),
@@ -50,7 +47,7 @@ in web and desktop applications. If you want to use a non-interactive flow like 
         });
     ```
 
-  - **Use `OpenIddictClientService` to retrieve an access token from the remote server:**
+  - **使用 `OpenIddictClientService` 从远程服务器获取访问令牌：**
     ```csharp
     var service = provider.GetRequiredService<OpenIddictClientService>();
 
@@ -58,40 +55,40 @@ in web and desktop applications. If you want to use a non-interactive flow like 
     var token = result.AccessToken;
     ```
 
-## Implement an interactive OAuth 2.0/OpenID Connect client in an ASP.NET Core application:
+## 在 ASP.NET Core 应用程序中实现交互式 OAuth 2.0/OpenID Connect 客户端：
 
-**To implement an interactive OAuth 2.0/OpenID Connect client in an ASP.NET Core application, the simplest option is to clone
-one of the official samples** from the [openiddict-samples repository](https://github.com/openiddict/openiddict-samples).
+**要在 ASP.NET Core 应用程序中实现交互式 OAuth 2.0/OpenID Connect 客户端，最简单的方法是克隆
+[openiddict-samples 仓库](https://github.com/openiddict/openiddict-samples) 中的官方示例之一。**
 
-If you don't want to start from one of the recommended samples, you'll need to:
+如果您不想从推荐的示例开始，您需要：
 
-  - **Have an existing project or create a new one**: when creating a new project using Visual Studio's default ASP.NET Core template,
-  using **individual user accounts authentication** is strongly recommended as it automatically includes a default ASP.NET Core Identity UI
-  based on Razor Pages, that automatically handles the user creation process or external login integration in a transparent way.
+  - **拥有现有项目或创建新项目**：使用 Visual Studio 的默认 ASP.NET Core 模板创建新项目时，
+  强烈建议使用**个人用户帐户身份验证**，因为它自动包含基于 Razor Pages 的默认 ASP.NET Core Identity UI，
+  可以透明地处理用户创建过程或外部登录集成。
 
-  - **Update your `.csproj` file** to reference the latest `OpenIddict.AspNetCore` and `OpenIddict.EntityFrameworkCore` packages:
+  - **更新 `.csproj` 文件** 以引用最新的 `OpenIddict.AspNetCore` 和 `OpenIddict.EntityFrameworkCore` 包：
 
   ```xml
   <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
   <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0" />
   ```
 
-  - **Configure the OpenIddict core services** in `Program.cs` (or `Startup.cs`, depending on whether you're using the minimal host or the regular host):
+  - **在 `Program.cs` 中配置 OpenIddict 核心服务**（根据您使用的是最小主机还是常规主机，可能在 `Startup.cs` 中）：
 
   > [!IMPORTANT]
-  > Configuring a database is required because the OpenIddict client is stateful by default: it uses the `IOpenIddictTokenStore<T>`
-  > service to store the payload of the state tokens it creates – to protect the callback stage from CSRF/session fixation attacks –
-  > and enable automatic state token redeeming (unlike the ASP.NET Core OAuth 2.0 or OpenID Connect handlers, the OpenIddict client
-  > prevents state tokens from being used multiple times to mitigate authorization response/state token replay attacks).
+  > 配置数据库是必需的，因为 OpenIddict 客户端默认是有状态的：它使用 `IOpenIddictTokenStore<T>`
+  > 服务来存储它创建的状态令牌的有效负载 - 以保护回调阶段免受 CSRF/会话固定攻击 -
+  > 并启用自动状态令牌兑换（与 ASP.NET Core OAuth 2.0 或 OpenID Connect 处理程序不同，OpenIddict 客户端
+  > 防止状态令牌被多次使用，以减轻授权响应/状态令牌重放攻击）。
 
   ```csharp
   services.AddDbContext<ApplicationDbContext>(options =>
   {
-      // Configure Entity Framework Core to use Microsoft SQL Server.
+      // 配置 Entity Framework Core 使用 Microsoft SQL Server。
       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
-      // Register the entity sets needed by OpenIddict.
-      // Note: use the generic overload if you need to replace the default OpenIddict entities.
+      // 注册 OpenIddict 所需的实体集。
+      // 注意：如果需要替换默认的 OpenIddict 实体，请使用通用重载。
       options.UseOpenIddict();
   });
   ```
@@ -99,46 +96,44 @@ If you don't want to start from one of the recommended samples, you'll need to:
   ```csharp
   services.AddOpenIddict()
 
-      // Register the OpenIddict core components.
+      // 注册 OpenIddict 核心组件。
       .AddCore(options =>
       {
-          // Configure OpenIddict to use the Entity Framework Core stores and models.
-          // Note: call ReplaceDefaultEntities() to replace the default entities.
+          // 配置 OpenIddict 使用 Entity Framework Core 存储和模型。
+          // 注意：调用 ReplaceDefaultEntities() 来替换默认实体。
           options.UseEntityFrameworkCore()
                  .UseDbContext<ApplicationDbContext>();
       });
   ```
 
-  - **Configure the OpenIddict client services**. Here's an example enabling code flow support and adding the GitHub integration:
+  - **配置 OpenIddict 客户端服务**。以下是一个启用代码流支持并添加 GitHub 集成的示例：
 
   ```csharp
   services.AddOpenIddict()
 
-      // Register the OpenIddict client components.
+      // 注册 OpenIddict 客户端组件。
       .AddClient(options =>
       {
-          // Note: this sample only uses the authorization code flow,
-          // but you can enable the other flows if necessary.
+          // 注意：此示例仅使用授权代码流，
+          // 但您可以在必要时启用其他流程。
           options.AllowAuthorizationCodeFlow();
 
-          // Register the signing and encryption credentials used to protect
-          // sensitive data like the state tokens produced by OpenIddict.
+          // 注册用于保护敏感数据（如 OpenIddict 生成的状态令牌）的签名和加密凭据。
           options.AddDevelopmentEncryptionCertificate()
                  .AddDevelopmentSigningCertificate();
 
-          // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+          // 注册 ASP.NET Core 主机并配置 ASP.NET Core 特定选项。
           options.UseAspNetCore()
                  .EnableRedirectionEndpointPassthrough();
 
-          // Register the System.Net.Http integration.
+          // 注册 System.Net.Http 集成。
           options.UseSystemNetHttp();
 
-          // Register the Web providers integrations.
+          // 注册 Web 提供商集成。
           //
-          // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
-          // URI per provider, unless all the registered providers support returning a special "iss"
-          // parameter containing their URL as part of authorization responses. For more information,
-          // see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
+          // 注意：为了减轻混合攻击，建议为每个提供商使用唯一的重定向端点
+          // URI，除非所有注册的提供商都支持在授权响应中返回包含其 URL 的特殊 "iss"
+          // 参数。有关更多信息，请参阅 https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4。
           options.UseWebProviders()
                  .AddGitHub(options =>
                  {
@@ -149,7 +144,7 @@ If you don't want to start from one of the recommended samples, you'll need to:
       });
   ```
 
-  - **Make sure the ASP.NET Core authentication middleware is correctly registered at the right place**:
+  - **确保 ASP.NET Core 身份验证中间件在正确的位置正确注册**：
 
   ```csharp
   app.UseDeveloperExceptionPage();
@@ -169,75 +164,75 @@ If you don't want to start from one of the recommended samples, you'll need to:
   });
   ```
 
-  - **Add an authentication controller responsible for handling the OAuth 2.0/OpenID Connect callbacks:**
+  - **添加一个负责处理 OAuth 2.0/OpenID Connect 回调的身份验证控制器：**
 
   ```csharp
   [HttpGet("~/callback/login/{provider}"), HttpPost("~/callback/login/{provider}"), IgnoreAntiforgeryToken]
   public async Task<ActionResult> LogInCallback()
   {
-      // Retrieve the authorization data validated by OpenIddict as part of the callback handling.
+      // 检索由 OpenIddict 作为回调处理的一部分验证的授权数据。
       var result = await HttpContext.AuthenticateAsync(OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
   
-      // Important: if the remote server doesn't support OpenID Connect and doesn't expose a userinfo endpoint,
-      // result.Principal.Identity will represent an unauthenticated identity and won't contain any user claim.
+      // 重要：如果远程服务器不支持 OpenID Connect 并且不公开 userinfo 端点，
+      // result.Principal.Identity 将表示一个未经验证的身份，并且不包含任何用户声明。
       //
-      // Such identities cannot be used as-is to build an authentication cookie in ASP.NET Core (as the
-      // antiforgery stack requires at least a name claim to bind CSRF cookies to the user's identity) but
-      // the access/refresh tokens can be retrieved using result.Properties.GetTokens() to make API calls.
+      // 这样的身份不能直接用于在 ASP.NET Core 中构建身份验证 cookie（因为
+      // 防伪堆栈需要至少一个名称声明来将 CSRF cookie 绑定到用户身份），但
+      // 可以使用 result.Properties.GetTokens() 检索访问/刷新令牌来进行 API 调用。
       if (result.Principal is not ClaimsPrincipal { Identity.IsAuthenticated: true })
       {
           throw new InvalidOperationException("The external authorization data cannot be used for authentication.");
       }
   
-      // Build an identity based on the external claims and that will be used to create the authentication cookie.
+      // 基于外部声明构建一个身份，该身份将用于创建身份验证 cookie。
       var identity = new ClaimsIdentity(authenticationType: "ExternalLogin");
   
-      // By default, OpenIddict will automatically try to map the email/name and name identifier claims from
-      // their standard OpenID Connect or provider-specific equivalent, if available. If needed, additional
-      // claims can be resolved from the external identity and copied to the final authentication cookie.
+      // 默认情况下，OpenIddict 将自动尝试从标准 OpenID Connect 或提供商特定的等效项映射
+      // email/name 和名称标识符声明（如果可用）。如果需要，可以从外部身份解析其他声明
+      // 并复制到最终的身份验证 cookie。
       identity.SetClaim(ClaimTypes.Email, result.Principal.GetClaim(ClaimTypes.Email))
               .SetClaim(ClaimTypes.Name, result.Principal.GetClaim(ClaimTypes.Name))
               .SetClaim(ClaimTypes.NameIdentifier, result.Principal.GetClaim(ClaimTypes.NameIdentifier));
   
-      // Preserve the registration identifier to be able to resolve it later.
+      // 保留注册标识符以便稍后解析。
       identity.SetClaim(Claims.Private.RegistrationId, result.Principal.GetClaim(Claims.Private.RegistrationId));
   
-      // Build the authentication properties based on the properties that were added when the challenge was triggered.
+      // 基于触发质询时添加的属性构建身份验证属性。
       var properties = new AuthenticationProperties(result.Properties.Items)
       {
           RedirectUri = result.Properties.RedirectUri ?? "/"
       };
   
-      // If needed, the tokens returned by the authorization server can be stored in the authentication cookie.
+      // 如果需要，可以将授权服务器返回的令牌存储在身份验证 cookie 中。
       //
-      // To make cookies less heavy, tokens that are not used are filtered out before creating the cookie.
+      // 为了使 cookie 不那么重，在创建 cookie 之前会过滤掉未使用的令牌。
       properties.StoreTokens(result.Properties.GetTokens().Where(token => token.Name is
-          // Preserve the access, identity and refresh tokens returned in the token response, if available.
+          // 保留令牌响应中返回的访问、身份和刷新令牌（如果可用）。
           OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken   or
           OpenIddictClientAspNetCoreConstants.Tokens.BackchannelIdentityToken or
           OpenIddictClientAspNetCoreConstants.Tokens.RefreshToken));
   
-      // Ask the default sign-in handler to return a new cookie and redirect the
-      // user agent to the return URL stored in the authentication properties.
+      // 要求默认的登录处理程序返回一个新的 cookie 并将
+      // 用户代理重定向到存储在身份验证属性中的返回 URL。
       //
-      // For scenarios where the default sign-in handler configured in the ASP.NET Core
-      // authentication options shouldn't be used, a specific scheme can be specified here.
+      // 对于不应使用 ASP.NET Core 身份验证选项中配置的默认登录处理程序的场景，
+      // 可以在此处指定特定的方案。
       return SignIn(new ClaimsPrincipal(identity), properties);
   }
   ```
 
-  - Once correctly configured, the GitHub provider should appear in the list of supported external providers:
+  - 正确配置后，GitHub 提供商应出现在支持的外部提供商列表中：
 
-![Identity UI showing GitHub as a supported external provider](integrating-with-a-remote-server-instance/identity-ui.png)
-
-> [!TIP]
-> For more information on the well-known services supported out-of-the-box by the OpenIddict client, read [Web providers](/integrations/web-providers.md).
-
-## Implement an interactive OAuth 2.0/OpenID Connect client in a mobile or desktop application:
-
-**To implement an interactive OAuth 2.0/OpenID Connect client in a mobile or desktop application, the simplest option is to clone
-one of the official samples** from the [openiddict-samples repository](https://github.com/openiddict/openiddict-samples).
+![显示 GitHub 作为支持的外部提供商的 Identity UI](integrating-with-a-remote-server-instance/identity-ui.png)
 
 > [!TIP]
-> For more information on how to use the OpenIddict client on Android, iOS, Linux, macOS, Mac Catalyst
-> and Windows, read [Operating systems integration](/integrations/operating-systems.md).
+> 有关 OpenIddict 客户端开箱即用支持的知名服务的更多信息，请阅读 [Web 提供商](/integrations/web-providers.md)。
+
+## 在移动或桌面应用程序中实现交互式 OAuth 2.0/OpenID Connect 客户端：
+
+**要在移动或桌面应用程序中实现交互式 OAuth 2.0/OpenID Connect 客户端，最简单的方法是克隆
+[openiddict-samples 仓库](https://github.com/openiddict/openiddict-samples) 中的官方示例之一。**
+
+> [!TIP]
+> 有关如何在 Android、iOS、Linux、macOS、Mac Catalyst 和 Windows 上使用 OpenIddict 客户端的更多信息，
+> 请阅读 [操作系统集成](/integrations/operating-systems.md)。

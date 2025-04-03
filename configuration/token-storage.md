@@ -1,33 +1,33 @@
-# Token storage <Badge type="info" text="core" /><Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
+# Token 存储 <Badge type="info" text="core" /><Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
 
-To keep track of all the tokens produced by its client and server features, OpenIddict creates a token entry in the database for each generated token.
-A token entry contains metadata like the subject of the token, the client identifier of the application it was issued to or its creation and expiration dates.
+为了跟踪其客户端和服务器功能产生的所有令牌，OpenIddict 在数据库中为每个生成的令牌创建一个令牌条目。
+令牌条目包含元数据，如令牌的主题、颁发给它的应用程序的客户端标识符，以及其创建和过期日期。
 
-By default, the token payload – generated using either the
-[Azure Active Directory IdentityModel Extensions for .NET library](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/) for JWT tokens or
-[ASP.NET Core Data Protection](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction) for Data Protection tokens – is never stored in the database,
-except for the following types of tokens:
-  - Client feature: state tokens.
-  - Server feature: authorization codes, device and user codes (exclusively used in the device code flow).
+默认情况下，令牌有效负载 – 使用
+[Azure Active Directory IdentityModel Extensions for .NET library](https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/) 生成 JWT 令牌，或
+[ASP.NET Core Data Protection](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction) 生成数据保护令牌 – 永远不会存储在数据库中，
+除了以下类型的令牌：
+  - 客户端功能：状态令牌。
+  - 服务器功能：授权码、设备码和用户码（专门用于设备码流程）。
 
-Such tokens – called reference tokens – are not returned as-is to the caller: instead, their payload is stored in the database entry and a crypto-secure
-random 256-bit identifier – called reference identifier – is returned as a base64url-encoded string and serves as the "final" token used by the client application
-when communicating with OpenIddict's endpoints or with resource servers (if reference access tokens are enabled in the server options).
+这些令牌 – 称为引用令牌 – 不会原样返回给调用者：相反，它们的有效负载存储在数据库条目中，并返回一个加密安全的
+256位随机标识符 – 称为引用标识符 – 作为 base64url 编码的字符串，作为客户端应用程序与 OpenIddict 的端点
+或资源服务器（如果在服务器选项中启用了引用访问令牌）通信时使用的"最终"令牌。
 
 > [!TIP]
-> In OpenIddict 3.0+, the ability to revoke a token is not tied to the token format and doesn't require enabling reference tokens:
-> regular JWT or ASP.NET Core Data Protection tokens can be revoked as long as token storage is not explicitly disabled in the server options.
+> 在 OpenIddict 3.0+ 中，撤销令牌的能力与令牌格式无关，不需要启用引用令牌：
+> 只要在服务器选项中没有明确禁用令牌存储，常规 JWT 或 ASP.NET Core 数据保护令牌就可以被撤销。
 
-## Enabling reference access and/or refresh tokens <Badge type="danger" text="server" />
+## 启用引用访问和/或刷新令牌 <Badge type="danger" text="server" />
 
-Reference access and refresh tokens can be manually enabled in the server options for developers who prefer returning
-shorter access and/or refresh tokens or need to deal with limits that would prevent sending large tokens over the wire.
+对于希望返回更短的访问和/或刷新令牌，或需要处理可能阻止通过网络发送大型令牌的限制的开发者，
+可以在服务器选项中手动启用引用访问和刷新令牌。
 
 > [!CAUTION]
-> When enabling reference access and/or refresh tokens support, it is STRONGLY recommended to either:
-> - Use the ASP.NET Core Data Protection format for access and refresh tokens, as they benefit from additional security measures that would prevent them from being sent as-is if
-> they were stolen from the database. For more information on how to enable ASP.NET Core Data Protection, read [Token formats](token-formats.md).
-> - Enable column encryption/data at rest encryption to protect the `Payload` column of token entries.
+> 启用引用访问和/或刷新令牌支持时，强烈建议：
+> - 对访问和刷新令牌使用 ASP.NET Core 数据保护格式，因为它们受益于额外的安全措施，可以防止它们在被从数据库窃取时被原样发送。
+> 有关如何启用 ASP.NET Core 数据保护的更多信息，请阅读 [Token 格式](token-formats.md)。
+> - 启用列加密/静态数据加密以保护令牌条目的 `Payload` 列。
 
 ```csharp
 services.AddOpenIddict()
@@ -38,16 +38,16 @@ services.AddOpenIddict()
     });
 ```
 
-## Enabling token entry validation at the API level <Badge type="tip" text="validation" />
+## 在 API 级别启用令牌条目验证 <Badge type="tip" text="validation" />
 
-**For performance reasons, OpenIddict doesn't check, by default, the status of a token entry when receiving an API request**: access tokens are considered valid until they expire.
-For scenarios that require immediate access token revocation, the OpenIddict validation handler can be configured to enforce token entry validation for each API request:
+**出于性能考虑，OpenIddict 默认不会在接收 API 请求时检查令牌条目的状态**：访问令牌被认为在过期之前都是有效的。
+对于需要立即撤销访问令牌的场景，可以配置 OpenIddict 验证处理程序以对每个 API 请求强制执行令牌条目验证：
 
 > [!NOTE]
-> Enabling token entry validation requires that the OpenIddict validation handler have a direct access to the server database where tokens are stored, which makes it
-> better suited for APIs located in the same application as the authorization server. For external applications, consider using introspection instead of local validation.
+> 启用令牌条目验证要求 OpenIddict 验证处理程序能够直接访问存储令牌的服务器数据库，这使其
+> 更适合与授权服务器位于同一应用程序中的 API。对于外部应用程序，请考虑使用内省而不是本地验证。
 >
-> In both cases, additional latency – caused by the additional DB request and the HTTP call for introspection – is expected.
+> 在这两种情况下，都会产生额外的延迟 – 由额外的数据库请求和内省的 HTTP 调用导致。
 
 ```csharp
 services.AddOpenIddict()
@@ -57,9 +57,9 @@ services.AddOpenIddict()
     });
 ```
 
-## Disabling token storage <Badge type="danger" text="server" />
+## 禁用令牌存储 <Badge type="danger" text="server" />
 
-While STRONGLY discouraged, token storage can be disabled in the server options:
+虽然强烈不推荐，但可以在服务器选项中禁用令牌存储：
 
 ```csharp
 services.AddOpenIddict()
@@ -70,4 +70,4 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> Disabling token storage prevents reference access or refresh tokens support from being enabled, as this requires storing the tokens in the database.
+> 禁用令牌存储会阻止启用引用访问或刷新令牌支持，因为这需要在数据库中存储令牌。

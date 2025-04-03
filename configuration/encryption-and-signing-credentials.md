@@ -1,31 +1,31 @@
-# Encryption and signing credentials <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
+# 加密和签名凭证 <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
 
-To protect the tokens they generate, the OpenIddict client and server stacks use 2 types of credentials:
-  - **Signing credentials are used to protect against tampering**. They can be either asymmetric (e.g a RSA or ECDSA key) or symmetric.
-  - **Encryption credentials are used to ensure the content of tokens cannot be read by malicious parties**. They can be either asymmetric (e.g a RSA key) or symmetric.
+为了保护它们生成的令牌，OpenIddict 客户端和服务器堆栈使用两种类型的凭证：
+  - **签名凭证用于防止篡改**。它们可以是对称的（如 RSA 或 ECDSA 密钥）或非对称的。
+  - **加密凭证用于确保令牌内容不能被恶意方读取**。它们可以是对称的（如 RSA 密钥）或非对称的。
 
 > [!TIP]
-> Tokens generated using the opt-in ASP.NET Core Data Protection integration rely on their own key ring, distinct from the credentials discussed in this documentation.
+> 使用可选的 ASP.NET Core 数据保护集成生成的令牌依赖于它们自己的密钥环，与本文档中讨论的凭证不同。
 >
-> For more information about Data Protection, visit [ASP.NET Core Data Protection](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction).
+> 有关数据保护的更多信息，请访问 [ASP.NET Core 数据保护](https://docs.microsoft.com/en-us/aspnet/core/security/data-protection/introduction)。
 
 > [!IMPORTANT]
-> While you can technically reuse the same set of credentials for both the OpenIddict client and the OpenIddict server, it is recommended to use separate keys/certificates.
+> 虽然技术上可以在 OpenIddict 客户端和 OpenIddict 服务器中重用相同的凭证集，但建议使用单独的密钥/证书。
 
-## Registering credentials in the client or server options <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+## 在客户端或服务器选项中注册凭证 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-OpenIddict allows registering one or multiple keys (raw keys or embedded in X.509 certificates).
+OpenIddict 允许注册一个或多个密钥（原始密钥或嵌入在 X.509 证书中）。
 
 > [!NOTE]
-> When multiple keys/certificates are registered (which can be useful to implement keys rotation), OpenIddict chooses the most appropriate key based on the following algorithm:
->  - Symmetric keys are always chosen first, except for identity tokens, that can only be signed using asymmetric keys.
->  - Asymmetric keys embedded in X.509 certificates are ordered based on the `NotAfter` and `NotBefore` dates (certificates that are not yet valid
-> are not used by OpenIddict and certificates with the furthest expiration date are always preferred).
->  - X.509 certificates are always preferred to raw RSA/ECDSA keys.
+> 当注册多个密钥/证书时（这对于实现密钥轮换很有用），OpenIddict 根据以下算法选择最合适的密钥：
+>  - 对称密钥总是优先选择，除了身份令牌，它只能使用非对称密钥签名。
+>  - 嵌入在 X.509 证书中的非对称密钥根据 `NotAfter` 和 `NotBefore` 日期排序（尚未生效的证书
+> 不会被 OpenIddict 使用，具有最远过期日期的证书总是优先）。
+>  - X.509 证书总是优先于原始 RSA/ECDSA 密钥。
 
-### Registering an ephemeral key
+### 注册临时密钥
 
-For development purposes, an ephemeral key – that is not persisted or shared across instances – can be used to sign or encrypt tokens:
+对于开发目的，可以使用临时密钥来签名或加密令牌，这种密钥不会持久化或在不同实例间共享：
 
 ```csharp
 services.AddOpenIddict()
@@ -42,15 +42,15 @@ services.AddOpenIddict()
 ```
 
 > [!NOTE]
-> `options.AddEphemeralEncryptionKey()` generates an asymmetric RSA key which is not directly used as-is to encrypt the tokens but is used to encrypt an
-> intermediate *per-token* symmetric key with which the token content is first encrypted using [AES](https://datatracker.ietf.org/doc/html/rfc7518#section-5.2.6).
+> `options.AddEphemeralEncryptionKey()` 生成一个非对称 RSA 密钥，它不会直接用于加密令牌，而是用于加密一个中间*每个令牌*的对称密钥，
+> 然后使用 [AES](https://datatracker.ietf.org/doc/html/rfc7518#section-5.2.6) 首先加密令牌内容。
 >
-> For more information about this mechanism, read [Key Encryption with RSAES OAEP](https://datatracker.ietf.org/doc/html/rfc7518#section-4.3).
+> 有关此机制的更多信息，请阅读 [使用 RSAES OAEP 进行密钥加密](https://datatracker.ietf.org/doc/html/rfc7518#section-4.3)。
 
-### Registering a development certificate
+### 注册开发证书
 
-For development purposes, a certificate can be generated and stored by OpenIddict in the certificates store of the user account running the application host.
-Unlike ephemeral keys, development certificates are persisted - but not shared across instances - and will be reused when the application host is restarted.
+对于开发目的，OpenIddict 可以生成并存储证书在运行应用程序主机的用户账户的证书存储中。
+与临时密钥不同，开发证书会被持久化 - 但不会在不同实例间共享 - 并且会在应用程序主机重启时被重用。
 
 ```csharp
 services.AddOpenIddict()
@@ -67,18 +67,19 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> This feature is not available on .NET Framework 4.6.2: calling `options.AddDevelopmentEncryptionCertificate()` or `options.AddDevelopmentSigningCertificate()`
-> will result in a `PlatformNotSupportedException` being thrown at runtime if no valid development certificate can be found and a new one must be generated.
+> 此功能在 .NET Framework 4.6.2 上不可用：如果在运行时找不到有效的开发证书且需要生成新证书，
+> 调用 `options.AddDevelopmentEncryptionCertificate()` 或 `options.AddDevelopmentSigningCertificate()`
+> 将导致抛出 `PlatformNotSupportedException`。
 
 > [!CAUTION]
-> `options.AddDevelopmentEncryptionCertificate()` or `options.AddDevelopmentSigningCertificate()` cannot be used in applications deployed on IIS or Azure App Service:
-> trying to use them on IIS or Azure App Service will result in an exception being thrown at runtime (unless the application pool is configured to load a user profile).
-> To avoid that, consider creating self-signed certificates and storing them in the X.509 certificates store of the host machine(s).
+> `options.AddDevelopmentEncryptionCertificate()` 或 `options.AddDevelopmentSigningCertificate()` 不能在部署在 IIS 或 Azure App Service 上的应用程序中使用：
+> 在 IIS 或 Azure App Service 上尝试使用它们将在运行时抛出异常（除非应用程序池配置为加载用户配置文件）。
+> 为避免这种情况，请考虑创建自签名证书并将其存储在主机机器的 X.509 证书存储中。
 
-### Registering a key
+### 注册密钥
 
-To register a signing or encryption key, an instance of a `SecurityKey` - typically a `SymmetricSecurityKey` or a `RsaSecurityKey` -
-can be provided to the `options.AddSigningKey()`/`options.AddEncryptionKey()` methods:
+要注册签名或加密密钥，可以向 `options.AddSigningKey()`/`options.AddEncryptionKey()` 方法提供 `SecurityKey` 的实例
+（通常是 `SymmetricSecurityKey` 或 `RsaSecurityKey`）：
 
 ```csharp
 services.AddOpenIddict()
@@ -95,18 +96,17 @@ services.AddOpenIddict()
 ```
 
 > [!NOTE]
-> While signing keys can be either symmetric or asymmetric, the OpenIddict server requires registering at least one asymmetric key to sign identity tokens.
-> If both an asymmetric and a symmetric signing key are registered, the symmetric key will always be preferred when protecting access tokens,
-> authorization codes or refresh tokens, while the asymmetric key will be used to sign identity tokens, that are meant to be publicly validated.
+> 虽然签名密钥可以是对称的或非对称的，但 OpenIddict 服务器要求至少注册一个非对称密钥来签名身份令牌。
+> 如果同时注册了非对称和对称签名密钥，对称密钥将始终优先用于保护访问令牌、
+> 授权代码或刷新令牌，而非对称密钥将用于签名身份令牌，这些令牌旨在公开验证。
 
-### Registering a certificate (recommended for production-ready scenarios)
+### 注册证书（推荐用于生产就绪场景）
 
-To register a signing or encryption certificate, the `options.AddSigningCertificate()`/`options.AddEncryptionCertificate()` methods can be called
-with an instance of `X509Certificate2`. Alternatively, a unique `thumbprint` identifying the certificate in the machine or user certificate store
-of the operating system can also be provided.
+要注册签名或加密证书，可以使用 `X509Certificate2` 的实例调用 `options.AddSigningCertificate()`/`options.AddEncryptionCertificate()` 方法。
+或者，也可以提供在操作系统的机器或用户证书存储中标识证书的唯一 `thumbprint`。
 
-**In production, it is recommended to use two RSA certificates, distinct from the certificate(s) used for HTTPS: one for encryption, one for signing**.
-Certificates can be generated and self-signed locally using the .NET Core `CertificateRequest` API:
+**在生产环境中，建议使用两个 RSA 证书，与用于 HTTPS 的证书不同：一个用于加密，一个用于签名**。
+可以使用 .NET Core 的 `CertificateRequest` API 在本地生成和自签名证书：
 
 ```csharp
 using var algorithm = RSA.Create(keySizeInBits: 2048);
@@ -132,17 +132,16 @@ var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset
 File.WriteAllBytes("server-signing-certificate.pfx", certificate.Export(X509ContentType.Pfx, string.Empty));
 ```
 
-The best place to store your certificates will depend on your host:
-  - For IIS applications, [storing the certificates in the machine store](https://www.sonicwall.com/support/knowledge-base/how-can-i-import-certificates-into-the-ms-windows-local-machine-certificate-store/170504615105398/) is the recommended option.
-  - On Azure, certificates can be uploaded and exposed to Azure App Service applications using the special `WEBSITE_LOAD_CERTIFICATES` flag.
-For more information, visit [Use a TLS/SSL certificate in your code in Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-certificate-in-code).
+存储证书的最佳位置将取决于您的主机：
+  - 对于 IIS 应用程序，[将证书存储在机器存储中](https://www.sonicwall.com/support/knowledge-base/how-can-i-import-certificates-into-the-ms-windows-local-machine-certificate-store/170504615105398/) 是推荐选项。
+  - 在 Azure 上，可以使用特殊的 `WEBSITE_LOAD_CERTIFICATES` 标志上传证书并将其暴露给 Azure App Service 应用程序。
+有关更多信息，请访问 [在 Azure App Service 中的代码中使用 TLS/SSL 证书](https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-certificate-in-code)。
 
-## Importing credentials in the validation options of the API projects <Badge type="tip" text="validation" />
+## 在 API 项目的验证选项中导入凭证 <Badge type="tip" text="validation" />
 
-### Using the `options.UseLocalServer()` integration
+### 使用 `options.UseLocalServer()` 集成
 
-When the API and the authorization server are part of the same project, both the signing and
-encryption credentials can be easily imported by calling `options.UseLocalServer()`:
+当 API 和授权服务器是同一项目的一部分时，可以通过调用 `options.UseLocalServer()` 轻松导入签名和加密凭证：
 
 ```csharp
 services.AddOpenIddict()
@@ -152,10 +151,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Using OpenID Connect discovery (asymmetric signing keys only)
+### 使用 OpenID Connect 发现（仅限非对称签名密钥）
 
-When the API and the authorization server are hosted in different applications,
-[standard OpenID Connect discovery](https://openid.net/specs/openid-connect-discovery-1_0.html) can be used to automatically import asymmetric signing keys:
+当 API 和授权服务器托管在不同的应用程序中时，可以使用
+[标准 OpenID Connect 发现](https://openid.net/specs/openid-connect-discovery-1_0.html) 自动导入非对称签名密钥：
 
 ```csharp
 services.AddOpenIddict()
@@ -167,17 +166,16 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> Using OpenID Connect discovery requires enabling the `System.Net.Http` integration: make sure the
-> `OpenIddict.Validation.SystemNetHttp` package is referenced and call `UseSystemNetHttp()` to enable it.
+> 使用 OpenID Connect 发现需要启用 `System.Net.Http` 集成：确保引用了
+> `OpenIddict.Validation.SystemNetHttp` 包并调用 `UseSystemNetHttp()` 来启用它。
 >
-> For more information, read [`System.Net.Http` integration](/integrations/system-net-http.md).
+> 有关更多信息，请阅读 [`System.Net.Http` 集成](/integrations/system-net-http.md)。
 
-### Registering a symmetric signing key in the token validation parameters
+### 在令牌验证参数中注册对称签名密钥
 
-Unlike asymmetric signing keys, symmetric keys - used with HMAC-based algorithms like [HS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.2) - cannot
-be safely exposed by an OpenID Connect discovery endpoint. As such, they can't be automatically imported by the OpenIddict validation handler.
-For applications that require using a symmetric signing key, the advanced configuration APIs can be used to register it in the token validation options:
-
+与非对称签名密钥不同，对称密钥 - 用于基于 HMAC 的算法，如 [HS256](https://datatracker.ietf.org/doc/html/rfc7518#section-3.2) - 不能
+安全地通过 OpenID Connect 发现端点暴露。因此，它们不能被 OpenIddict 验证处理程序自动导入。
+对于需要使用对称签名密钥的应用程序，可以使用高级配置 API 在令牌验证选项中注册它：
 
 ```csharp
 services.AddOpenIddict()
@@ -189,9 +187,9 @@ services.AddOpenIddict()
     });
 ```
 
-### Registering an encryption key or certificate
+### 注册加密密钥或证书
 
-To import an encryption key/certificate, the same overloads as the ones exposed by the OpenIddict server feature can be used:
+要导入加密密钥/证书，可以使用与 OpenIddict 服务器功能相同的重载：
 
 ```csharp
 services.AddOpenIddict()

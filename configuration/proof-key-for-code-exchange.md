@@ -1,19 +1,16 @@
-# Proof Key for Code Exchange <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+# 授权码交换证明密钥 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-Initially designed as a way to protect mobile applications from seeing their callback URIs hijacked by a malicious application installed
-on the same device, the [Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636) mechanism has been extended to
-confidential clients to help mitigate authorization code leakages.
+最初设计用于防止移动应用程序的回调 URI 被同一设备上安装的恶意应用程序劫持，[授权码交换证明密钥 (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636) 机制已扩展到机密客户端，以帮助缓解授权码泄露问题。
 
-Proof Key for Code Exchange is fully supported by all versions of the OpenIddict client and server stacks
-and the OpenIddict server can be configured to enforce this security feature globally or per-client.
+授权码交换证明密钥完全支持所有版本的 OpenIddict 客户端和服务器堆栈，OpenIddict 服务器可以配置为全局或按客户端强制执行此安全功能。
 
 > [!TIP]
-> The OpenIddict client always uses Proof Key for Code Exchange when the configuration metadata indicates this feature
-> is supported by the authorization server: you don't have to configure anything to enable it at the client level.
+> 当配置元数据表明授权服务器支持此功能时，OpenIddict 客户端始终使用授权码交换证明密钥：
+> 您无需在客户端级别进行任何配置即可启用它。
 
-## Enabling PKCE enforcement at the global level <Badge type="danger" text="server" />
+## 在全局级别启用 PKCE 强制执行 <Badge type="danger" text="server" />
 
-Proof Key for Code Exchange can be enforced globally by calling `options.RequireProofKeyForCodeExchange()` in the server options:
+可以通过在服务器选项中调用 `options.RequireProofKeyForCodeExchange()` 来全局强制执行授权码交换证明密钥：
 
 ```csharp
 services.AddOpenIddict()
@@ -23,9 +20,9 @@ services.AddOpenIddict()
     });
 ```
 
-## Enabling PKCE enforcement per client <Badge type="danger" text="server" />
+## 按客户端启用 PKCE 强制执行 <Badge type="danger" text="server" />
 
-Proof Key for Code Exchange can also be enforced per-client by adding it to the list of requirements attached to a client:
+也可以通过将授权码交换证明密钥添加到附加到客户端的需求列表中来按客户端强制执行：
 
 ```csharp
 await manager.CreateAsync(new OpenIddictApplicationDescriptor

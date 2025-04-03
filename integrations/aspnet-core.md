@@ -1,13 +1,12 @@
-# ASP.NET Core integration <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
+# ASP.NET Core 集成 <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
 
-Thanks to their native ASP.NET Core integrations, the client, server and validation features offered by OpenIddict can be used in any
-ASP.NET Core 2.1+ application, independently of whether they are using MVC controllers, Razor Pages, minimal API handlers or raw middleware.
+得益于其原生的 ASP.NET Core 集成，OpenIddict 提供的客户端、服务器和验证功能可以在任何 ASP.NET Core 2.1+ 应用程序中使用，无论它们使用的是 MVC 控制器、Razor Pages、最小 API 处理程序还是原始中间件。
 
-## Supported versions
+## 支持的版本
 
-| ASP.NET Core version | .NET runtime version |                                       |
+| ASP.NET Core 版本 | .NET 运行时版本 |                                       |
 |----------------------|----------------------|---------------------------------------|
-| ASP.NET Core 2.1     | .NET Framework 4.6.2 | :heavy_check_mark: (with limitations) |
+| ASP.NET Core 2.1     | .NET Framework 4.6.2 | :heavy_check_mark: (有限制) |
 | ASP.NET Core 2.1     | .NET Framework 4.7.2 | :heavy_check_mark:                    |
 | ASP.NET Core 2.1     | .NET Framework 4.8   | :heavy_check_mark:                    |
 | ASP.NET Core 2.1     | .NET Core 2.1        | :exclamation:                         |
@@ -21,24 +20,20 @@ ASP.NET Core 2.1+ application, independently of whether they are using MVC contr
 | ASP.NET Core 9.0     | .NET 9.0             | :heavy_check_mark:                    |
 
 > [!WARNING]
-> **ASP.NET Core 2.1 on .NET Core 2.1, ASP.NET Core 3.1, 5.0 and 7.0 are no longer supported by Microsoft. While OpenIddict can still be used
-> on these platforms thanks to its .NET Standard 2.0 compatibility, users are strongly encouraged to migrate to ASP.NET Core 8.0 or 9.0**.
+> **ASP.NET Core 2.1 on .NET Core 2.1、ASP.NET Core 3.1、5.0 和 7.0 不再受 Microsoft 支持。虽然 OpenIddict 仍然可以在这些平台上使用，这要归功于其 .NET Standard 2.0 兼容性，但强烈建议用户迁移到 ASP.NET Core 8.0 或 9.0**。
 >
-> ASP.NET Core 2.1 on .NET Framework 4.6.2 (and higher) is still fully supported.
+> ASP.NET Core 2.1 on .NET Framework 4.6.2（及更高版本）仍然完全受支持。
 
 > [!NOTE]
-> **The following features are not available when targeting .NET Framework 4.6.2**:
->  - X.509 development encryption/signing certificates: calling `AddDevelopmentEncryptionCertificate()` or `AddDevelopmentSigningCertificate()`
-> will result in a `PlatformNotSupportedException` being thrown at runtime if no valid development certificate can be found and a new one must be generated.
->  - X.509 ECDSA signing certificates/keys: calling `AddSigningCertificate()` or `AddSigningKey()`
-> with an ECDSA certificate/key will always result in a `PlatformNotSupportedException` being thrown at runtime.
+> **以下功能在面向 .NET Framework 4.6.2 时不可用**：
+>  - X.509 开发加密/签名证书：如果找不到有效的开发证书且必须生成新证书，调用 `AddDevelopmentEncryptionCertificate()` 或 `AddDevelopmentSigningCertificate()` 将在运行时抛出 `PlatformNotSupportedException`。
+>  - X.509 ECDSA 签名证书/密钥：使用 ECDSA 证书/密钥调用 `AddSigningCertificate()` 或 `AddSigningKey()` 将始终在运行时抛出 `PlatformNotSupportedException`。
 
-## Basic configuration <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
+## 基本配置 <Badge type="warning" text="client" /><Badge type="danger" text="server" /><Badge type="tip" text="validation" />
 
-To configure the ASP.NET Core integration, you'll need to:
-  - **Reference the `OpenIddict.Client.AspNetCore` and/or `OpenIddict.Server.AspNetCore` and/or
-  `OpenIddict.Validation.AspNetCore` packages**
-  (depending on whether you need the client and/or server and/or validation features in your project):
+要配置 ASP.NET Core 集成，您需要：
+  - **引用 `OpenIddict.Client.AspNetCore` 和/或 `OpenIddict.Server.AspNetCore` 和/或 `OpenIddict.Validation.AspNetCore` 包**
+  （取决于您的项目中是否需要客户端和/或服务器和/或验证功能）：
 
   ```xml
   <PackageReference Include="OpenIddict.Client.AspNetCore" Version="6.2.0" />
@@ -46,7 +41,7 @@ To configure the ASP.NET Core integration, you'll need to:
   <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="6.2.0" />
   ```
 
-  - **Call `UseAspNetCore()` for each OpenIddict feature (client, server and validation) you want to add**:
+  - **为每个要添加的 OpenIddict 功能（客户端、服务器和验证）调用 `UseAspNetCore()`**：
 
   ```csharp
   services.AddOpenIddict()
@@ -75,10 +70,9 @@ To configure the ASP.NET Core integration, you'll need to:
   ```
 
 > [!WARNING]
-> OpenIddict integrates with ASP.NET Core using an `IAuthenticationRequestHandler` service.
+> OpenIddict 使用 `IAuthenticationRequestHandler` 服务与 ASP.NET Core 集成。
 >
-> As such, it is critical that the ASP.NET Core authentication middleware be registered at the
-> right place in the pipeline (i.e after `app.UseCors()` and before `app.UseEndpoint()`):
+> 因此，确保 ASP.NET Core 身份验证中间件在管道中的正确位置注册至关重要（即在 `app.UseCors()` 之后和 `app.UseEndpoint()` 之前）：
 >
 >  ```csharp
 >  app.UseDeveloperExceptionPage();
@@ -97,17 +91,15 @@ To configure the ASP.NET Core integration, you'll need to:
 >  });
 >  ```
 
-## Advanced configuration
+## 高级配置
 
-### Transport security requirement <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+### 传输安全要求 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-By default, the OpenIddict server ASP.NET Core integration will refuse to serve non-HTTPS
-requests for security reasons and will return an error page to the caller.
+默认情况下，出于安全原因，OpenIddict 服务器 ASP.NET Core 集成将拒绝服务非 HTTPS 请求，并向调用者返回错误页面。
 
-For the same reason, the OpenIddict client ASP.NET Core host will, by default, refuse to start authentication challenges
-from a non-HTTPS page and will automatically throw an exception to abort these unsafe operations.
+出于同样的原因，OpenIddict 客户端 ASP.NET Core 主机默认情况下将拒绝从非 HTTPS 页面启动身份验证挑战，并自动抛出异常以中止这些不安全操作。
 
-While disabling this requirement is strongly discouraged in most cases, it can be disabled using the `DisableTransportSecurityRequirement()` API:
+虽然在大多数情况下强烈不建议禁用此要求，但可以使用 `DisableTransportSecurityRequirement()` API 禁用它：
 
 ```csharp
 services.AddOpenIddict()
@@ -124,23 +116,18 @@ services.AddOpenIddict()
 ```
 
 > [!CAUTION]
-> **The transport security requirement SHOULD NEVER be disabled in production**, even when using a reverse proxy doing TLS termination: if requests
-> are rejected by OpenIddict when doing TLS termination, this very likely means that the ASP.NET Core application was not properly configured to
-> extract and restore the original request details (and more specifically, `HttpRequest.Scheme`).
+> **在生产环境中永远不应禁用传输安全要求**，即使在使用进行 TLS 终止的反向代理时也是如此：如果请求被 OpenIddict 在 TLS 终止时拒绝，这很可能意味着 ASP.NET Core 应用程序未正确配置以提取和恢复原始请求详细信息（更具体地说，是 `HttpRequest.Scheme`）。
 >
-> For more information,
-> read [Configure ASP.NET Core to work with proxy servers and load balancers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer).
+> 有关更多信息，请阅读[配置 ASP.NET Core 以与代理服务器和负载均衡器配合使用](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer)。
 
-### Pass-through mode <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+### 直通模式 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-The ASP.NET Core integration offered by the OpenIddict client and server stacks offers built-in pass-through support
-for some of the built-in endpoints (typically, endpoints for which users will want to provide custom logic).
+OpenIddict 客户端和服务器堆栈提供的 ASP.NET Core 集成为一些内置端点（通常是用户希望提供自定义逻辑的端点）提供了内置的直通支持。
 
 > [!NOTE]
-> For more information on the pass-through mode, read [Pass-through support](/introduction.md#pass-through-support).
+> 有关直通模式的更多信息，请阅读[直通支持](/introduction.md#pass-through-support)。
 
-Pass-through mode for a specific endpoint can be enabled using the APIs exposed by `OpenIddictClientAspNetCoreBuilder`
-or `OpenIddictServerAspNetCoreBuilder`. E.g for the authorization endpoint:
+可以使用 `OpenIddictClientAspNetCoreBuilder` 或 `OpenIddictServerAspNetCoreBuilder` 公开的 API 为特定端点启用直通模式。例如，对于授权端点：
 
 ```csharp
 services.AddOpenIddict()
@@ -153,16 +140,16 @@ services.AddOpenIddict()
     });
 ```
 
-Once enabled, you can handle authorization requests in an MVC controller or a minimal API handler:
+启用后，您可以在 MVC 控制器或最小 API 处理程序中处理授权请求：
 
 ```csharp
 app.MapMethods("authorize", [HttpMethods.Get, HttpMethods.Post], async (HttpContext context) =>
 {
-    // Resolve the claims stored in the cookie created after the GitHub authentication dance.
-    // If the principal cannot be found, trigger a new challenge to redirect the user to GitHub.
+    // 解析 GitHub 身份验证后创建的 cookie 中存储的声明。
+    // 如果找不到主体，则触发新的质询以将用户重定向到 GitHub。
     //
-    // For scenarios where the default authentication handler configured in the ASP.NET Core
-    // authentication options shouldn't be used, a specific scheme can be specified here.
+    // 对于不应使用 ASP.NET Core 身份验证选项中配置的默认身份验证处理程序的场景，
+    // 可以在此处指定特定的方案。
     var principal = (await context.AuthenticateAsync())?.Principal;
     if (principal is null)
     {
@@ -176,13 +163,13 @@ app.MapMethods("authorize", [HttpMethods.Get, HttpMethods.Post], async (HttpCont
 
     var identifier = principal.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-    // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+    // 创建将由 OpenIddict 用于生成令牌的基于声明的身份。
     var identity = new ClaimsIdentity(
         authenticationType: TokenValidationParameters.DefaultAuthenticationType,
         nameType: Claims.Name,
         roleType: Claims.Role);
 
-    // Import a few select claims from the identity stored in the local cookie.
+    // 从存储在本地 cookie 中的身份导入一些选定的声明。
     identity.AddClaim(new Claim(Claims.Subject, identifier));
     identity.AddClaim(new Claim(Claims.Name, identifier).SetDestinations(Destinations.AccessToken));
     identity.AddClaim(new Claim(Claims.PreferredUsername, identifier).SetDestinations(Destinations.AccessToken));
@@ -191,12 +178,11 @@ app.MapMethods("authorize", [HttpMethods.Get, HttpMethods.Post], async (HttpCont
 });
 ```
 
-### Status code pages middleware integration <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+### 状态码页面中间件集成 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-Both the OpenIddict client and server ASP.NET Core hosts offer an option to render error pages using
-[ASP.NET Core's status code pages middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#usestatuscodepages).
+OpenIddict 客户端和服务器 ASP.NET Core 主机都提供了使用[ASP.NET Core 的状态码页面中间件](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling#usestatuscodepages)渲染错误页面的选项。
 
-To enable this feature, you can use the dedicated `EnableStatusCodePagesIntegration()` API:
+要启用此功能，您可以使用专用的 `EnableStatusCodePagesIntegration()` API：
 
 ```csharp
 services.AddOpenIddict()
@@ -217,8 +203,7 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> You'll need to make sure the status code pages middleware is registered at an appropriate place
-> in the ASP.NET Core pipeline (i.e before `app.UseAuthentication()`):
+> 您需要确保状态码页面中间件在 ASP.NET Core 管道中的适当位置注册（即在 `app.UseAuthentication()` 之前）：
 >
 >  ```csharp
 >  app.UseDeveloperExceptionPage();
@@ -237,7 +222,7 @@ services.AddOpenIddict()
 >  });
 >  ```
 
-Once enabled, create an error controller that will be invoked to handle errored responses:
+启用后，创建一个错误控制器来处理错误响应：
 
 ```csharp
 public class ErrorController : Controller
@@ -245,7 +230,7 @@ public class ErrorController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true), Route("~/error")]
     public IActionResult Error()
     {
-        // If the error originated from the OpenIddict client, render the error details.
+        // 如果错误来自 OpenIddict 客户端，渲染错误详细信息。
         var response = HttpContext.GetOpenIddictClientResponse();
         if (response is not null)
         {
@@ -267,7 +252,7 @@ public class ErrorController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true), Route("~/error")]
     public IActionResult Error()
     {
-        // If the error originated from the OpenIddict server, render the error details.
+        // 如果错误来自 OpenIddict 服务器，渲染错误详细信息。
         var response = HttpContext.GetOpenIddictServerResponse();
         if (response is not null)
         {
@@ -284,9 +269,7 @@ public class ErrorController : Controller
 ```
 
 > [!TIP]
-> If you're using both the OpenIddict client and the OpenIddict server in the same application, you can configure both
-> stacks to use the status code pages middleware. In this case, you'll need to resolve the error response using both
-> `HttpContext.GetOpenIddictClientResponse()` and `HttpContext.GetOpenIddictServerResponse()`:
+> 如果您在同一应用程序中同时使用 OpenIddict 客户端和 OpenIddict 服务器，您可以配置两个堆栈都使用状态码页面中间件。在这种情况下，您需要使用 `HttpContext.GetOpenIddictClientResponse()` 和 `HttpContext.GetOpenIddictServerResponse()` 来解析错误响应：
 >
 > ```csharp
 > public class ErrorController : Controller
@@ -294,7 +277,7 @@ public class ErrorController : Controller
 >     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true), Route("~/error")]
 >     public IActionResult Error()
 >     {
->         // If the error originated from the OpenIddict client or server, render the error details.
+>         // 如果错误来自 OpenIddict 客户端或服务器，渲染错误详细信息。
 >         var response = HttpContext.GetOpenIddictClientResponse() ?? HttpContext.GetOpenIddictServerResponse();
 >         if (response is not null)
 >         {
@@ -310,14 +293,11 @@ public class ErrorController : Controller
 > }
 > ```
 
-### Authorization and logout request caching <Badge type="danger" text="server" />
+### 授权和注销请求缓存 <Badge type="danger" text="server" />
 
-To simplify flowing large authorization or logout requests, the OpenIddict server ASP.NET Core integration includes a built-in feature
-that allows generating a unique `request_uri` and caching the received requests in a request token persisted in OpenIddict's tokens table: when this feature is enabled,
-an automatic redirection to the current page with the other parameters removed is triggered by OpenIddict and the token entry is redeemed
-once the authorization or logout demand has been completed by the user.
+为了简化大型授权或注销请求的流动，OpenIddict 服务器 ASP.NET Core 集成包含一个内置功能，允许生成唯一的 `request_uri` 并在 OpenIddict 的令牌表中缓存接收到的请求：启用此功能后，OpenIddict 会触发到当前页面的自动重定向，并移除其他参数，一旦用户完成授权或注销请求，令牌条目就会被兑换。
 
-To enable this feature, you need to use the dedicated `EnableAuthorizationRequestCaching()` and/or `EnableLogoutEndpointPassthrough()` APIs:
+要启用此功能，您需要使用专用的 `EnableAuthorizationRequestCaching()` 和/或 `EnableLogoutEndpointPassthrough()` API：
 
 ```csharp
 services.AddOpenIddict()
@@ -328,16 +308,15 @@ services.AddOpenIddict()
     });
 ```
 
-### Authentication scheme forwarding <Badge type="warning" text="client" />
+### 身份验证方案转发 <Badge type="warning" text="client" />
 
-To simplify triggering authentication operations for a specific client registration, the OpenIddict client offers a built-in authentication scheme
-forwarding feature that allows using the provider name assigned to a client registration as an authentication scheme in ASP.NET Core:
+为了简化触发特定客户端注册的身份验证操作，OpenIddict 客户端提供了一个内置的身份验证方案转发功能，允许在 ASP.NET Core 中使用分配给客户端注册的提供程序名称作为身份验证方案：
 
 ```csharp
 app.MapGet("challenge", () => Results.Challenge(properties: null, authenticationSchemes: [Providers.GitHub]));
 ```
 
-This feature is enabled by default but can be disabled if necessary using `DisableAutomaticAuthenticationSchemeForwarding()`:
+此功能默认启用，但可以使用 `DisableAutomaticAuthenticationSchemeForwarding()` 在必要时禁用它：
 
 ```csharp
 services.AddOpenIddict()
@@ -348,8 +327,7 @@ services.AddOpenIddict()
     });
 ```
 
-If you need to enable forwarding for specific registrations only, you can use the advanced
-`AddForwardedAuthenticationScheme()` API to selectively add the schemes you want:
+如果您只需要为特定注册启用转发，可以使用高级 `AddForwardedAuthenticationScheme()` API 选择性地添加您想要的方案：
 
 ```csharp
 services.AddOpenIddict()
@@ -361,9 +339,7 @@ services.AddOpenIddict()
     });
 ```
 
-When automatic forwarding is disabled, authentication operations cannot directly use the provider name as an authentication scheme
-if no explicit forwarding was configured and must instead use `OpenIddictClientAspNetCoreDefaults.AuthenticationScheme` with an
-`AuthenticationProperties` instance containing the provider name, the issuer URI or the registration identifier:
+当自动转发被禁用时，如果没有配置显式转发，身份验证操作不能直接使用提供程序名称作为身份验证方案，而必须使用 `OpenIddictClientAspNetCoreDefaults.AuthenticationScheme` 和包含提供程序名称、颁发者 URI 或注册标识符的 `AuthenticationProperties` 实例：
 
 ```csharp
 app.MapGet("challenge", () =>
@@ -377,11 +353,11 @@ app.MapGet("challenge", () =>
 });
 ```
 
-### JSON responses indentation <Badge type="danger" text="server" />
+### JSON 响应缩进 <Badge type="danger" text="server" />
 
-By default, the OpenIddict server ASP.NET Core host will return indented JSON responses to make them easier to read.
+默认情况下，OpenIddict 服务器 ASP.NET Core 主机将返回缩进的 JSON 响应，使其更易于阅读。
 
-Users who prefer disabling indentation for JSON responses can do so by calling `SuppressJsonResponseIndentation()`:
+希望禁用 JSON 响应缩进的用户可以通过调用 `SuppressJsonResponseIndentation()` 来实现：
 
 ```csharp
 services.AddOpenIddict()

@@ -1,22 +1,22 @@
-# Web providers <Badge type="warning" text="client" />
+# Web 提供程序 <Badge type="warning" text="client" />
 
 > [!IMPORTANT]
-> This page focuses on configuring the OpenIddict client to use an existing provider. For more information on how to contribute a new
-> provider that is not yet supported by OpenIddict, read [Contributing a new Web provider](/guides/contributing-a-new-web-provider.md).
+> 本页主要介绍如何配置 OpenIddict 客户端以使用现有提供程序。有关如何贡献 OpenIddict 尚未支持的新提供程序的更多信息，
+> 请阅读[贡献新的 Web 提供程序](/guides/contributing-a-new-web-provider.md)。
 
-To simplify integrating with well-known OAuth 2.0 or OpenID Connect providers, the OpenIddict client ships with a companion
-package named [`OpenIddict.Client.WebIntegration`](https://www.nuget.org/packages/OpenIddict.Client.WebIntegration)
-that supports 90+ popular services like Amazon, Discord, GitHub, Microsoft or Sign in with Apple.
+为了简化与知名的 OAuth 2.0 或 OpenID Connect 提供程序的集成，OpenIddict 客户端附带了一个名为
+[`OpenIddict.Client.WebIntegration`](https://www.nuget.org/packages/OpenIddict.Client.WebIntegration)
+的配套包，该包支持 90 多个流行服务，如 Amazon、Discord、GitHub、Microsoft 或 Sign in with Apple。
 
 > [!TIP]
-> The OpenIddict client and its web providers can be used independently of the OpenIddict server feature.
+> OpenIddict 客户端及其 Web 提供程序可以独立于 OpenIddict 服务器功能使用。
 
-## Supported platforms
+## 支持的平台
 
-All the providers included in this package can be used in any web application – ASP.NET 4.6.1+ or ASP.NET Core 2.1+ – and any desktop
-or mobile application targeting a platform supported by the OpenIddict client (including Android, iOS, Linux, macOS and Windows).
+此包中包含的所有提供程序都可以在任何 Web 应用程序（ASP.NET 4.6.1+ 或 ASP.NET Core 2.1+）以及任何面向 OpenIddict 客户端支持的平台
+（包括 Android、iOS、Linux、macOS 和 Windows）的桌面或移动应用程序中使用。
 
-## Supported services
+## 支持的服务
 
 | Service                              | Documentation                                                                                                       |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
@@ -121,47 +121,47 @@ or mobile application targeting a platform supported by the OpenIddict client (i
 | Zoho                                 | https://www.zoho.com/accounts/protocol/oauth.html                                                                   |
 | Zoom                                 | https://developers.zoom.us/docs/integrations/oauth/                                                                 |
 
-## Differences with the aspnet-contrib social providers
+## 与 aspnet-contrib 社交提供程序的区别
 
-While the OpenIddict Web providers share some similarities with the
-[existing aspnet-contrib OAuth 2.0 providers](https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers/issues), **there are actually important technical differences**:
+虽然 OpenIddict Web 提供程序与[现有的 aspnet-contrib OAuth 2.0 提供程序](https://github.com/aspnet-contrib/AspNet.Security.OAuth.Providers/issues)
+有一些相似之处，但**实际上存在重要的技术差异**：
 
- - **OpenIddict fully supports OpenID Connect**, which allows enforcing additional security checks for providers that implement it.
+ - **OpenIddict 完全支持 OpenID Connect**，这允许对实现它的提供程序执行额外的安全检查。
 
- - The OpenIddict client is stateful and provides **built-in countermeasures against nonce/token replay attacks**.
+ - OpenIddict 客户端是有状态的，并提供**针对 nonce/token 重放攻击的内置对策**。
 
- - While the aspnet-contrib providers only support the OAuth 2.0 code flow, **the OpenIddict providers support additional flows**, including the
-   OpenID Connect hybrid flow, the OAuth 2.0 client credentials grant, the resource owner password credentials grant or the refresh token grant.
+ - 虽然 aspnet-contrib 提供程序仅支持 OAuth 2.0 授权码流程，但 **OpenIddict 提供程序支持其他流程**，包括
+   OpenID Connect 混合流程、OAuth 2.0 客户端凭据授权、资源所有者密码凭据授权或刷新令牌授权。
 
- - **The OpenIddict client supports OAuth 2.0 token introspection and OAuth 2.0 token revocation**.
+ - **OpenIddict 客户端支持 OAuth 2.0 令牌自省和 OAuth 2.0 令牌撤销**。
 
- - **OpenIddict uses OAuth 2.0 and OpenID Connect server configuration discovery** to avoid hardcoding the endpoint
-   URIs of a provider when possible, making the OpenIddict Web providers more robust and more future-proof.
+ - **OpenIddict 使用 OAuth 2.0 和 OpenID Connect 服务器配置发现**，以尽可能避免硬编码提供程序的端点
+   URI，使 OpenIddict Web 提供程序更加健壮和面向未来。
 
- - While the aspnet-contrib providers require targeting the latest ASP.NET Core version, **the OpenIddict Web providers can be
-   used in any supported version**. They can also be used in ASP.NET 4.6.1+ websites and mobile/desktop applications.
+ - 虽然 aspnet-contrib 提供程序需要针对最新的 ASP.NET Core 版本，但 **OpenIddict Web 提供程序可以在
+   任何支持的版本中使用**。它们也可以在 ASP.NET 4.6.1+ 网站和移动/桌面应用程序中使用。
 
- - **OpenIddict uses `Microsoft.Extensions.Http.Polly` (or `Microsoft.Extensions.Http.Resilience` on .NET 8+)
-   to make backchannel HTTP communications less prone to transient network errors**.
+ - **OpenIddict 使用 `Microsoft.Extensions.Http.Polly`（或在 .NET 8+ 上使用 `Microsoft.Extensions.Http.Resilience`）
+   使后台通道 HTTP 通信不易受瞬时网络错误影响**。
 
-As such, while the aspnet-contrib providers are still fully supported, **developers are encouraged to use the OpenIddict client for new applications**.
+因此，虽然 aspnet-contrib 提供程序仍然完全受支持，但**建议开发人员在新应用程序中使用 OpenIddict 客户端**。
 
-## Basic configuration
+## 基本配置
 
 > [!IMPORTANT]
-> Being an extension to the OpenIddict client, the OpenIddict Web integration requires a properly configured client.
+> 作为 OpenIddict 客户端的扩展，OpenIddict Web 集成需要正确配置的客户端。
 >
-> For more information on how to get started with the OpenIddict client,
-> read [Integrating with a remote server instance](/guides/getting-started/integrating-with-a-remote-server-instance.md).
+> 有关如何开始使用 OpenIddict 客户端的更多信息，
+> 请阅读[与远程服务器实例集成](/guides/getting-started/integrating-with-a-remote-server-instance.md)。
 
-To configure the `System.Net.Http` integration, you'll need to:
-  - **Reference the `OpenIddict.Client.WebIntegration` package**:
+要配置 `System.Net.Http` 集成，您需要：
+  - **引用 `OpenIddict.Client.WebIntegration` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.Client.WebIntegration" Version="6.2.0" />
   ```
 
-  - **Call `UseWebProviders()` in the client options**:
+  - **在客户端选项中调用 `UseWebProviders()`**：
 
   ```csharp
   services.AddOpenIddict()
@@ -169,21 +169,20 @@ To configure the `System.Net.Http` integration, you'll need to:
       {
           // ...
   
-          // Register the Web providers integrations.
+          // 注册 Web 提供程序集成。
           options.UseWebProviders();
       });
   ```
 
-  - To add a provider instance, call the corresponding `Add[Provider name]()` method and configure the required settings:
+  - 要添加提供程序实例，调用相应的 `Add[Provider name]()` 方法并配置所需的设置：
 
   ```csharp
   services.AddOpenIddict()
       .AddClient(options =>
       {
-          // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
-          // URI per provider, unless all the registered providers support returning a special "iss"
-          // parameter containing their URL as part of authorization responses. For more information,
-          // see https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4.
+          // 注意：为了减轻混合攻击，建议为每个提供程序使用唯一的重定向端点
+          // URI，除非所有注册的提供程序都支持在授权响应中返回包含其 URL 的特殊 "iss"
+          // 参数。更多信息，请参见 https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.4。
           options.UseWebProviders()
                  .AddGitHub(options =>
                  {
@@ -201,24 +200,24 @@ To configure the `System.Net.Http` integration, you'll need to:
   ```
 
 > [!TIP]
-> Once enabled, authentication operations (e.g challenges) can be triggered using the default provider name assigned by OpenIddict:
->   - In an ASP.NET Core application, using the authentication APIs provided by ASP.NET Core:
+> 启用后，可以使用 OpenIddict 分配的默认提供程序名称触发身份验证操作（例如挑战）：
+>   - 在 ASP.NET Core 应用程序中，使用 ASP.NET Core 提供的身份验证 API：
 >   ```csharp
 >   [HttpPost("~/login"), ValidateAntiForgeryToken]
 >   public async Task<ActionResult> LogInWithGitHub(string returnUrl)
 >   {
 >       var properties = new AuthenticationProperties
 >       {
->           // Only allow local return URLs to prevent open redirect attacks.
+>           // 仅允许本地返回 URL 以防止开放重定向攻击。
 >           RedirectUri = Url.IsLocalUrl(returnUrl) ? returnUrl : "/"
 >       };
 >   
->       // Ask the OpenIddict client middleware to redirect the user agent to GitHub.
+>       // 要求 OpenIddict 客户端中间件将用户代理重定向到 GitHub。
 >       return Challenge(properties, OpenIddictClientWebIntegrationConstants.Providers.GitHub);
 >   }
 >   ```
 > 
->   - In a desktop or mobile application (e.g WPF), using the APIs exposed by `OpenIddictClientService`:
+>   - 在桌面或移动应用程序（例如 WPF）中，使用 `OpenIddictClientService` 公开的 API：
 >   ```csharp
 >   public partial class MainWindow : Window, IWpfShell
 >   {
@@ -233,7 +232,7 @@ To configure the `System.Net.Http` integration, you'll need to:
 >   
 >       private async void LoginButton_Click(object sender, RoutedEventArgs e)
 >       {
->           // Disable the login button to prevent concurrent authentication operations.
+>           // 禁用登录按钮以防止并发身份验证操作。
 >           LoginButton.IsEnabled = false;
 >   
 >           try
@@ -242,14 +241,14 @@ To configure the `System.Net.Http` integration, you'll need to:
 >   
 >               try
 >               {
->                   // Ask OpenIddict to initiate the authentication flow (typically, by starting the system browser).
+>                   // 要求 OpenIddict 启动身份验证流程（通常是通过启动系统浏览器）。
 >                   var result = await _service.ChallengeInteractivelyAsync(new()
 >                   {
 >                       CancellationToken = source.Token,
 >                       ProviderName = OpenIddictClientWebIntegrationConstants.Providers.GitHub
 >                   });
 >   
->                   // Wait for the user to complete the authorization process.
+>                   // 等待用户完成授权过程。
 >                   var principal = (await _service.AuthenticateInteractivelyAsync(new()
 >                   {
 >                       CancellationToken = source.Token,
@@ -281,19 +280,18 @@ To configure the `System.Net.Http` integration, you'll need to:
 >   
 >           finally
 >           {
->               // Re-enable the login button to allow starting a new authentication operation.
+>               // 重新启用登录按钮以允许启动新的身份验证操作。
 >               LoginButton.IsEnabled = true;
 >           }
 >       }
 >   }
 >   ```
 
-## Advanced configuration
+## 高级配置
 
-### Register multiple instances of the same provider
+### 注册同一提供程序的多个实例
 
-Registering multiple instances of the same provider is fully supported but requires specifying a different provider
-name for each provider registration if you use the `ProviderName` property to trigger authentication operations.
+完全支持注册同一提供程序的多个实例，但如果使用 `ProviderName` 属性触发身份验证操作，则需要为每个提供程序注册指定不同的提供程序名称。
 
 ```csharp
 services.AddOpenIddict()
@@ -323,25 +321,24 @@ public async Task<ActionResult> LogInWithGitHubInstanceA(string returnUrl)
 {
     var properties = new AuthenticationProperties
     {
-        // Only allow local return URLs to prevent open redirect attacks.
+        // 仅允许本地返回 URL 以防止开放重定向攻击。
         RedirectUri = Url.IsLocalUrl(returnUrl) ? returnUrl : "/"
     };
 
-    // Ask the OpenIddict client middleware to redirect the
-    // user agent to GitHub using the "Instance A" settings.
+    // 要求 OpenIddict 客户端中间件使用"实例 A"设置
+    // 将用户代理重定向到 GitHub。
     return Challenge(properties, "GitHub-Instance-A");
 }
 ```
 
 > [!WARNING]
-> While not strictly required, using a different `redirect_uri` per provider instance is strongly recommended to help mitigate mix-up attacks.
+> 虽然不是严格要求，但强烈建议为每个提供程序实例使用不同的 `redirect_uri` 以帮助减轻混合攻击。
 
-### Configure a different display name that will be visible by the users
+### 配置用户可见的不同显示名称
 
-When using ASP.NET Core Identity and its default UI, the login page automatically lists the
-external providers configured in the application, including the OpenIddict Web providers.
+当使用 ASP.NET Core Identity 及其默认 UI 时，登录页面会自动列出应用程序中配置的外部提供程序，包括 OpenIddict Web 提供程序。
 
-While OpenIddict automatically assigns a default display name, that value can be overridden using the `SetProviderDisplayName()` API:
+虽然 OpenIddict 会自动分配默认显示名称，但可以使用 `SetProviderDisplayName()` API 覆盖该值：
 
 ```csharp
 services.AddOpenIddict()

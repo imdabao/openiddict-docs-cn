@@ -4,30 +4,30 @@ layout: home
 
 hero:
   name: OpenIddict
-  text: Versatile OAuth 2.0/OpenID Connect stack for .NET
-  tagline: Free and open source ❤
+  text: 适用于 .NET 的多功能 OAuth 2.0/OpenID Connect 堆栈
+  tagline: 免费且开源 ❤
   image:
     src: /openid.svg
     alt: OpenID Connect logo
 ---
 
-## What is OpenIddict?
+## 什么是 OpenIddict？
 
-OpenIddict aims at providing a **versatile solution** to implement **OpenID Connect client, server and token validation support in any .NET application**.
+OpenIddict 旨在提供一个**多功能解决方案**，用于在**任何 .NET 应用程序中实现 OpenID Connect 客户端、服务器和令牌验证支持**。
 
-## Getting started
+## 入门指南
 
-If you're looking for a turnkey solution that doesn't involve writing custom logic, consider taking a look at
-[ABP Framework](https://abp.io/modules/Volo.OpenIddict.Pro) and [OrchardCore](https://github.com/OrchardCMS/OrchardCore): they support
-OpenIddict out of the box and are the best options to implement a standard OpenID Connect server (even if you're not familiar with the standard!).
+如果您正在寻找一个不需要编写自定义逻辑的现成解决方案，可以考虑查看
+[ABP Framework](https://abp.io/modules/Volo.OpenIddict.Pro) 和 [OrchardCore](https://github.com/OrchardCMS/OrchardCore)：它们都支持
+OpenIddict 开箱即用，是实施标准 OpenID Connect 服务器的最佳选择（即使您不熟悉该标准！）。
 
-If you prefer implementing a custom solution, read [Getting started](guides/getting-started/index.md).
+如果您更喜欢实现自定义解决方案，请阅读[入门指南](guides/getting-started/index.md)。
 
-Additional integrations – free or commercial – can be found in [Integrations](integrations/index.md).
+其他集成方案（免费或商业版）可以在[集成](integrations/index.md)中找到。
 
-## Sponsors
+## 赞助商
 
-This project wouldn't exist without the support of [our incredible sponsors](https://github.com/sponsors/kevinchalet#sponsors):
+这个项目离不开[我们出色的赞助商](https://github.com/sponsors/kevinchalet#sponsors)的支持：
 
 <a href="https://volosoft.com/">
   <picture>

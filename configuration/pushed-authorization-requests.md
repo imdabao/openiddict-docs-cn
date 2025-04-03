@@ -1,24 +1,22 @@
-# Pushed Authorization Requests <Badge type="warning" text="client" /><Badge type="danger" text="server" />
+# 推送授权请求 <Badge type="warning" text="client" /><Badge type="danger" text="server" />
 
-OAuth 2.0 Pushed Authorization Requests (aka PAR) is a [specification](https://datatracker.ietf.org/doc/html/rfc9126) that was designed
-to offer integrity-protected authorization requests to confidential clients: by sending the actual request parameters via backchannel
-communication before redirecting the user agent to the regular authorization endpoint with a unique and random `request_uri` attached,
-authorization flows can only be initiated by the legit client and the content of authorization requests cannot be altered on-the-fly
-by the end user or a malicious party.
+OAuth 2.0 推送授权请求（简称 PAR）是一个[规范](https://datatracker.ietf.org/doc/html/rfc9126)，旨在为机密客户端提供完整性保护的授权请求：
+通过在后端通道通信中发送实际的请求参数，然后在重定向用户代理到常规授权端点时附加唯一的随机 `request_uri`，
+授权流程只能由合法客户端发起，授权请求的内容不能被最终用户或恶意方实时篡改。
 
-While the protection offered by this mechanism mostly benefits to confidential applications,
-public clients (e.g browser applications, mobile or desktop applications) can also use it.
+虽然这种机制提供的保护主要使机密应用程序受益，
+但公共客户端（如浏览器应用程序、移动或桌面应用程序）也可以使用它。
 
-Pushed Authorization Requests are fully supported by the OpenIddict client and server stacks in OpenIddict 6.1.0 and higher.
+OpenIddict 6.1.0 及更高版本完全支持推送授权请求的客户端和服务器端。
 
 > [!TIP]
-> The OpenIddict client always uses Pushed Authorization Requests when the configuration metadata indicates this feature
-> is supported by the authorization server: you don't have to configure anything to enable it at the client level.
+> 当配置元数据表明授权服务器支持此功能时，OpenIddict 客户端始终使用推送授权请求：
+> 您无需在客户端级别进行任何配置即可启用它。
 
-## Enabling the pushed authorization endpoint <Badge type="danger" text="server" />
+## 启用推送授权端点 <Badge type="danger" text="server" />
 
-Like all the server endpoints (except the configuration and JSON Web Key Set endpoints), the pushed authorization endpoint
-is opt-in and must be explicitly enabled before a client application can start sending pushed authorization requests:
+与所有服务器端点（除了配置和 JSON Web 密钥集端点）一样，推送授权端点是可选的，
+必须明确启用后客户端应用程序才能开始发送推送授权请求：
 
 ```csharp
 services.AddOpenIddict()
@@ -28,10 +26,10 @@ services.AddOpenIddict()
     });
 ```
 
-## Allowing client applications to use the pushed authorization endpoint <Badge type="danger" text="server" />
+## 允许客户端应用程序使用推送授权端点 <Badge type="danger" text="server" />
 
-Unless endpoint permissions are explicitly disabled using the `options.IgnoreEndpointPermissions()` API, a client application
-must be explicitly granted the pushed authorization endpoint permission to be able to communicate with this endpoint:
+除非使用 `options.IgnoreEndpointPermissions()` API 明确禁用端点权限，否则客户端应用程序
+必须被明确授予推送授权端点权限才能与此端点通信：
 
 ```csharp
 await manager.CreateAsync(new OpenIddictApplicationDescriptor
@@ -65,11 +63,11 @@ await manager.CreateAsync(new OpenIddictApplicationDescriptor
 ```
 
 > [!TIP]
-> For more information about permissions, read [Application permissions](application-permissions.md).
+> 有关权限的更多信息，请阅读[应用程序权限](application-permissions.md)。
 
-## Enabling PAR enforcement at the global level <Badge type="danger" text="server" />
+## 在全局级别启用 PAR 强制 <Badge type="danger" text="server" />
 
-Pushed Authorization Requests can be enforced globally by calling `options.RequirePushedAuthorizationRequests()` in the server options:
+可以通过在服务器选项中调用 `options.RequirePushedAuthorizationRequests()` 来全局强制推送授权请求：
 
 ```csharp
 services.AddOpenIddict()
@@ -79,9 +77,9 @@ services.AddOpenIddict()
     });
 ```
 
-## Enabling PAR enforcement per client <Badge type="danger" text="server" />
+## 按客户端启用 PAR 强制 <Badge type="danger" text="server" />
 
-Pushed Authorization Requests can also be enforced per-client by adding it to the list of requirements attached to a client:
+推送授权请求也可以通过将其添加到附加到客户端的需求列表中来按客户端强制：
 
 ```csharp
 await manager.CreateAsync(new OpenIddictApplicationDescriptor
@@ -118,12 +116,12 @@ await manager.CreateAsync(new OpenIddictApplicationDescriptor
 });
 ```
 
-## Disabling PAR support for a specific client registration or web provider <Badge type="warning" text="client" />
+## 禁用特定客户端注册或 Web 提供程序的 PAR 支持 <Badge type="warning" text="client" />
 
-While it recommended that all clients (public or confidential) use OAuth 2.0 Pushed Authorization Requests
-when available, the feature can be explicitly disabled in the client registration or using the web providers APIs:
+虽然建议所有客户端（公共或机密）在可用时都使用 OAuth 2.0 推送授权请求，
+但可以在客户端注册中或使用 Web 提供程序 API 明确禁用此功能：
 
-### Disabling PAR using `OpenIddictClientRegistration.DisablePushedAuthorizationRequests`
+### 使用 `OpenIddictClientRegistration.DisablePushedAuthorizationRequests` 禁用 PAR
 
 ```csharp
 options.AddRegistration(new OpenIddictClientRegistration
@@ -143,7 +141,7 @@ options.AddRegistration(new OpenIddictClientRegistration
 });
 ```
 
-### Disabling PAR using `options.DisablePushedAuthorizationRequests()`
+### 使用 `options.DisablePushedAuthorizationRequests()` 禁用 PAR
 
 ```csharp
 options.UseWebProviders()

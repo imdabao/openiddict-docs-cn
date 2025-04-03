@@ -3,45 +3,46 @@ import { defineConfig } from "vitepress"
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "OpenIddict",
-  description: "Documentation for the OpenIddict project",
+  description: "OpenIddict 项目文档",
+  base: "/openiddict-documentation-cn/",
   cleanUrls: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Home", link: "/" },
+      { text: "首页", link: "/" },
       {
-        text: "Introduction",
+        text: "介绍",
         link: "/introduction",
         activeMatch: "^/introduction"
       },
       {
-        text: "Guides",
+        text: "指南",
         link: "/guides/",
         activeMatch: "^/guides/"
       },
       {
-        text: "Configuration",
+        text: "配置",
         link: "/configuration/",
         activeMatch: "^/configuration/"
       },
       {
-        text: "Integrations",
+        text: "集成",
         link: "/integrations/",
         activeMatch: "^/integrations/"
       },
-      { text: "Website", link: "https://openiddict.com/" },
-      { text: "Samples", link: "https://github.com/openiddict/openiddict-samples" },
-      { text: "Changelog", link: "https://github.com/openiddict/openiddict-core/releases" }
+      { text: "网站", link: "https://openiddict.com/" },
+      { text: "示例", link: "https://github.com/openiddict/openiddict-samples" },
+      { text: "更新日志", link: "https://github.com/openiddict/openiddict-core/releases" }
     ],
 
     sidebar: {
       "/introduction": {
         items: [
           {
-            text: "External resources",
+            text: "外部资源",
             items: [
-              { text: "OAuth 2.0 specification", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
-              { text: "OpenID Connect specification", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
+              { text: "OAuth 2.0 规范", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
+              { text: "OpenID Connect 规范", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
             ]
           }
         ]
@@ -49,55 +50,55 @@ export default defineConfig({
       "/guides/": {
         items: [
           {
-            text: "Getting started",
+            text: "入门指南",
             link: "/guides/getting-started/",
             items: [
-              { text: "Creating your own server instance", link: "/guides/getting-started/creating-your-own-server-instance" },
-              { text: "Implementing token validation in your APIs", link: "/guides/getting-started/implementing-token-validation-in-your-apis" },
-              { text: "Integrating with a remote server instance", link: "/guides/getting-started/integrating-with-a-remote-server-instance" }
+              { text: "创建自己的服务器实例", link: "/guides/getting-started/creating-your-own-server-instance" },
+              { text: "在 API 中实现令牌验证", link: "/guides/getting-started/implementing-token-validation-in-your-apis" },
+              { text: "与远程服务器实例集成", link: "/guides/getting-started/integrating-with-a-remote-server-instance" }
             ]
           },
           {
-            text: "Choosing the right flow",
+            text: "选择合适的流程",
             link: "/guides/choosing-the-right-flow"
           },
           {
-            text: "Migration guides",
+            text: "迁移指南",
             items: [
-              { text: "Migration from 2.0 to 3.0", link: "/guides/migration/20-to-30" },
-              { text: "Migration from 3.0 to 4.0", link: "/guides/migration/30-to-40" },
-              { text: "Migration from 4.0 to 5.0", link: "/guides/migration/40-to-50" },
-              { text: "Migration from 5.0 to 6.0", link: "/guides/migration/50-to-60" }
+              { text: "从 2.0 迁移到 3.0", link: "/guides/migration/20-to-30" },
+              { text: "从 3.0 迁移到 4.0", link: "/guides/migration/30-to-40" },
+              { text: "从 4.0 迁移到 5.0", link: "/guides/migration/40-to-50" },
+              { text: "从 5.0 迁移到 6.0", link: "/guides/migration/50-to-60" }
             ]
           },
           {
-            text: "Contributing a new Web provider",
+            text: "贡献新的 Web 提供程序",
             link: "/guides/contributing-a-new-web-provider"
           },
           {
-            text: "External resources",
+            text: "外部资源",
             items: [
-              { text: "OAuth 2.0 specification", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
-              { text: "OpenID Connect specification", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
+              { text: "OAuth 2.0 规范", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
+              { text: "OpenID Connect 规范", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
             ]
           }
         ]
       },
       "/configuration/": {
         items: [
-          { text: "Application permissions", link: "/configuration/application-permissions" },
-          { text: "Authorization storage", link: "/configuration/authorization-storage" },
-          { text: "Claim destinations", link: "/configuration/claim-destinations" },
-          { text: "Encryption and signing credentials", link: "/configuration/encryption-and-signing-credentials" },
-          { text: "Proof Key for Code Exchange", link: "/configuration/proof-key-for-code-exchange" },
-          { text: "Pushed Authorization Requests", link: "/configuration/pushed-authorization-requests" },
-          { text: "Token formats", link: "/configuration/token-formats" },
-          { text: "Token storage", link: "/configuration/token-storage" },
+          { text: "应用程序权限", link: "/configuration/application-permissions" },
+          { text: "授权存储", link: "/configuration/authorization-storage" },
+          { text: "声明目标", link: "/configuration/claim-destinations" },
+          { text: "加密和签名凭据", link: "/configuration/encryption-and-signing-credentials" },
+          { text: "代码交换证明密钥", link: "/configuration/proof-key-for-code-exchange" },
+          { text: "推送授权请求", link: "/configuration/pushed-authorization-requests" },
+          { text: "令牌格式", link: "/configuration/token-formats" },
+          { text: "令牌存储", link: "/configuration/token-storage" },
           {
-            text: "External resources",
+            text: "外部资源",
             items: [
-              { text: "OAuth 2.0 specification", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
-              { text: "OpenID Connect specification", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
+              { text: "OAuth 2.0 规范", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
+              { text: "OpenID Connect 规范", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
             ]
           }
         ]
@@ -105,19 +106,19 @@ export default defineConfig({
       "/integrations/": {
         items: [
           {
-            text: "Web hosts",
+            text: "Web 主机",
             items: [
               { text: "ASP.NET Core", link: "/integrations/aspnet-core" }
             ]
           },
           {
-            text: "Token formats",
+            text: "令牌格式",
             items: [
-              { text: "ASP.NET Core Data Protection", link: "/integrations/aspnet-core-data-protection" }
+              { text: "ASP.NET Core 数据保护", link: "/integrations/aspnet-core-data-protection" }
             ]
           },
           {
-            text: "Object-relational mappers and databases",
+            text: "对象关系映射器和数据库",
             items: [
               { text: "Entity Framework", link: "/integrations/entity-framework" },
               { text: "Entity Framework Core", link: "/integrations/entity-framework-core" },
@@ -125,14 +126,14 @@ export default defineConfig({
             ]
           },
           { text: "Quartz.NET", link: "/integrations/quartz" },
-          { text: "Operating systems", link: "/integrations/operating-systems" },
+          { text: "操作系统", link: "/integrations/operating-systems" },
           { text: "System.Net.Http", link: "/integrations/system-net-http" },
-          { text: "Web providers", link: "/integrations/web-providers" },
+          { text: "Web 提供程序", link: "/integrations/web-providers" },
           {
-            text: "External resources",
+            text: "外部资源",
             items: [
-              { text: "OAuth 2.0 specification", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
-              { text: "OpenID Connect specification", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
+              { text: "OAuth 2.0 规范", link: "https://datatracker.ietf.org/doc/html/rfc6749" },
+              { text: "OpenID Connect 规范", link: "https://openid.net/specs/openid-connect-core-1_0.html" }
             ]
           }
         ]
@@ -149,8 +150,8 @@ export default defineConfig({
     logo: "/logo.png",
 
     editLink: {
-      pattern: "https://github.com/openiddict/openiddict-documentation/edit/dev/:path",
-      text: "Edit this page on GitHub"
+      pattern: "https://github.com/imdabao/openiddict-documentation/edit/zh-cn/:path",
+      text: "在 GitHub 上编辑此页面"
     },
 
     docFooter: {
@@ -163,7 +164,7 @@ export default defineConfig({
     },
 
     footer: {
-      message: "Proudly powered by VitePress."
+      message: "由 VitePress 强力驱动。"
     }
   }
 })

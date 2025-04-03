@@ -1,23 +1,20 @@
-# Application permissions <Badge type="info" text="core" /><Badge type="danger" text="server" />
+# 应用权限 <Badge type="info" text="core" /><Badge type="danger" text="server" />
 
-To control and limit the OAuth 2.0/OpenID Connect features client applications are able to use, the OpenIddict server
-stack allows assigning them a list of application permissions: if the permission corresponding to a specific feature
-has not been granted, the OpenIddict server automatically rejects the request with an error message indicating
-the client application is not allowed to perform the requested action.
+为了控制和限制客户端应用程序可以使用的 OAuth 2.0/OpenID Connect 功能，OpenIddict 服务器堆栈允许为它们分配一系列应用权限：如果未授予与特定功能对应的权限，OpenIddict 服务器会自动拒绝请求，并返回错误消息，表明客户端应用程序不允许执行请求的操作。
 
-4 categories of permissions are currently supported by the server stack:
-  - Endpoint permissions.
-  - Grant type permissions.
-  - Scope permissions.
-  - Response type permissions.
+服务器堆栈目前支持 4 类权限：
+  - 端点权限
+  - 授权类型权限
+  - 范围权限
+  - 响应类型权限
 
-## Endpoint permissions
+## 端点权限
 
-### Definition
+### 定义
 
-Endpoint permissions limit the endpoints a client application can use.
+端点权限限制客户端应用程序可以使用的端点。
 
-### Supported permissions
+### 支持的权限
 
 |       Endpoint       |                             Constant                            |
 |:--------------------:|:---------------------------------------------------------------:|
@@ -29,10 +26,9 @@ Endpoint permissions limit the endpoints a client application can use.
 | Revocation           | `OpenIddictConstants.Permissions.Endpoints.Revocation`          |
 | Token                | `OpenIddictConstants.Permissions.Endpoints.Token`               |
 
-### Example
+### 示例
 
-In the following example, the `mvc` application is allowed to use the authorization, end session and
-token endpoints but will get an error when trying to send an introspection or revocation request:
+在以下示例中，`mvc` 应用程序被允许使用授权、结束会话和令牌端点，但在尝试发送内省或撤销请求时会收到错误：
 
 ```csharp
 if (await manager.FindByClientIdAsync("mvc") is null)
@@ -41,7 +37,7 @@ if (await manager.FindByClientIdAsync("mvc") is null)
     {
         ClientId = "mvc",
         ClientSecret = "901564A5-E7FE-42CB-B10D-61EF6A8F3654",
-        DisplayName = "MVC client application",
+        DisplayName = "MVC 客户端应用程序",
         PostLogoutRedirectUris = { new Uri("http://localhost:53507/signout-callback-oidc") },
         RedirectUris = { new Uri("http://localhost:53507/signin-oidc") },
         Permissions =
@@ -54,9 +50,9 @@ if (await manager.FindByClientIdAsync("mvc") is null)
 }
 ```
 
-### Disabling endpoint permissions
+### 禁用端点权限
 
-If you don't want to use endpoint permissions, call `options.IgnoreEndpointPermissions()` to ignore them:
+如果您不想使用端点权限，可以调用 `options.IgnoreEndpointPermissions()` 来忽略它们：
 
 ```csharp
 services.AddOpenIddict()
@@ -66,32 +62,31 @@ services.AddOpenIddict()
     });
 ```
 
-## Grant type permissions
+## 授权类型权限
 
-### Definition
+### 定义
 
-Grant type permissions limit the grant types a client application is allowed to use.
+授权类型权限限制客户端应用程序可以使用的授权类型。
 
-### Supported permissions
+### 支持的权限
 
-|     Grant type     |                            Constant                            |
-|:------------------:|:--------------------------------------------------------------:|
-| Authorization code | `OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode` |
-| Client credentials | `OpenIddictConstants.Permissions.GrantTypes.ClientCredentials` |
-| Implicit           | `OpenIddictConstants.Permissions.GrantTypes.Implicit`          |
-| Password           | `OpenIddictConstants.Permissions.GrantTypes.Password`          |
-| Refresh token      | `OpenIddictConstants.Permissions.GrantTypes.RefreshToken`      |
+|     授权类型     |                            常量                            |
+|:---------------:|:----------------------------------------------------------:|
+| 授权码          | `OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode` |
+| 客户端凭证      | `OpenIddictConstants.Permissions.GrantTypes.ClientCredentials` |
+| 隐式            | `OpenIddictConstants.Permissions.GrantTypes.Implicit`       |
+| 密码            | `OpenIddictConstants.Permissions.GrantTypes.Password`       |
+| 刷新令牌        | `OpenIddictConstants.Permissions.GrantTypes.RefreshToken`   |
 
-To add a custom grant type permission, you can use the following pattern:
+要添加自定义授权类型权限，可以使用以下模式：
 
 ```csharp
 OpenIddictConstants.Permissions.Prefixes.GrantType + "custom_flow_name"
 ```
 
-### Example
+### 示例
 
-In the following example, the `postman` application can only use the authorization code grant
-while `console` is restricted to the `password` and `refresh_token` grants:
+在以下示例中，`postman` 应用程序只能使用授权码授权，而 `console` 被限制为只能使用 `password` 和 `refresh_token` 授权：
 
 ```csharp
 if (await manager.FindByClientIdAsync("postman") is null)
@@ -128,9 +123,9 @@ if (await manager.FindByClientIdAsync("console") is null)
 }
 ```
 
-### Disabling grant type permissions
+### 禁用授权类型权限
 
-If you don't want to use grant type permissions, call `options.IgnoreGrantTypePermissions()` to ignore them:
+如果您不想使用授权类型权限，可以调用 `options.IgnoreGrantTypePermissions()` 来忽略它们：
 
 ```csharp
 services.AddOpenIddict()
@@ -140,35 +135,34 @@ services.AddOpenIddict()
     });
 ```
 
-## Scope permissions
+## 范围权限
 
-### Definition
+### 定义
 
-Scope permissions limit the scopes (standard or custom) a client application is allowed to use.
+范围权限限制客户端应用程序可以使用的范围（标准或自定义）。
 
 > [!NOTE]
-> The `openid` and `offline_access` scopes are special-cased by OpenIddict and don't require explicit permissions.
+> `openid` 和 `offline_access` 范围是 OpenIddict 的特殊情况，不需要显式权限。
 
-### Supported permissions
+### 支持的权限
 
-|  Scope  |                     Constant                     |
-|:-------:|:------------------------------------------------:|
+|  范围  |                    常量                    |
+|:------:|:------------------------------------------:|
 | address | `OpenIddictConstants.Permissions.Scopes.Address` |
 | email   | `OpenIddictConstants.Permissions.Scopes.Email`   |
 | phone   | `OpenIddictConstants.Permissions.Scopes.Phone`   |
 | profile | `OpenIddictConstants.Permissions.Scopes.Profile` |
 | roles   | `OpenIddictConstants.Permissions.Scopes.Roles`   |
 
-To add a custom scope permission, you can use the following pattern:
+要添加自定义范围权限，可以使用以下模式：
 
 ```csharp
 OpenIddictConstants.Permissions.Prefixes.Scope + "custom_scope_name"
 ```
 
-### Example
+### 示例
 
-In the following sample, the `angular` client is allowed to request the `address`,
-`profile` and `marketing_api` scopes: any other scope will result in an error being returned.
+在以下示例中，`angular` 客户端被允许请求 `address`、`profile` 和 `marketing_api` 范围：任何其他范围都会导致返回错误。
 
 ```csharp
 if (await manager.FindByClientIdAsync("angular") is null)
@@ -191,9 +185,9 @@ if (await manager.FindByClientIdAsync("angular") is null)
 }
 ```
 
-### Disabling scope permissions
+### 禁用范围权限
 
-If you don't want to use scope permissions, call `options.IgnoreScopePermissions()` to ignore them:
+如果您不想使用范围权限，可以调用 `options.IgnoreScopePermissions()` 来忽略它们：
 
 ```csharp
 services.AddOpenIddict()
@@ -203,31 +197,31 @@ services.AddOpenIddict()
     });
 ```
 
-## Response type permissions
+## 响应类型权限
 
 > [!NOTE]
-> Response type permissions were introduced in OpenIddict 3.0.
+> 响应类型权限在 OpenIddict 3.0 中引入。
 
-### Definition
+### 定义
 
-Response type permissions limit the response types a client application is allowed to use when implementing an interactive flow like code, implicit or hybrid.
+响应类型权限限制客户端应用程序在实现交互式流程（如代码、隐式或混合）时可以使用的响应类型。
 
-### Supported permissions
+### 支持的权限
 
-| Response type       | Constant                                                         |
-|:-------------------:|:----------------------------------------------------------------:|
-| code                | `OpenIddictConstants.Permissions.ResponseTypes.Code`             |
-| code id_token       | `OpenIddictConstants.Permissions.ResponseTypes.CodeIdToken`      |
+| 响应类型         | 常量                                                         |
+|:---------------:|:------------------------------------------------------------:|
+| code            | `OpenIddictConstants.Permissions.ResponseTypes.Code`         |
+| code id_token   | `OpenIddictConstants.Permissions.ResponseTypes.CodeIdToken`  |
 | code id_token token | `OpenIddictConstants.Permissions.ResponseTypes.CodeIdTokenToken` |
-| code token          | `OpenIddictConstants.Permissions.ResponseTypes.CodeToken`        |
-| id_token            | `OpenIddictConstants.Permissions.ResponseTypes.IdToken`          |
-| id_token token      | `OpenIddictConstants.Permissions.ResponseTypes.IdTokenToken`     |
-| none                | `OpenIddictConstants.Permissions.ResponseTypes.None`             |
-| token               | `OpenIddictConstants.Permissions.ResponseTypes.Token`            |
+| code token      | `OpenIddictConstants.Permissions.ResponseTypes.CodeToken`    |
+| id_token        | `OpenIddictConstants.Permissions.ResponseTypes.IdToken`      |
+| id_token token  | `OpenIddictConstants.Permissions.ResponseTypes.IdTokenToken` |
+| none            | `OpenIddictConstants.Permissions.ResponseTypes.None`         |
+| token           | `OpenIddictConstants.Permissions.ResponseTypes.Token`        |
 
-### Example
+### 示例
 
-In the following example, the `postman` application can only use the `code id_token` response type:
+在以下示例中，`postman` 应用程序只能使用 `code id_token` 响应类型：
 
 ```csharp
 if (await manager.FindByClientIdAsync("postman") is null)
@@ -250,9 +244,9 @@ if (await manager.FindByClientIdAsync("postman") is null)
 }
 ```
 
-### Disabling response type permissions
+### 禁用响应类型权限
 
-If you don't want to use response type permissions, call `options.IgnoreResponseTypePermissions()` to ignore them:
+如果您不想使用响应类型权限，可以调用 `options.IgnoreResponseTypePermissions()` 来忽略它们：
 
 ```csharp
 services.AddOpenIddict()

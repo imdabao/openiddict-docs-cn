@@ -1,3 +1,3 @@
-# Configuration
+# 配置
 
-OpenIddict comes with sensible defaults, but depending on the scenarios, the default settings can be amended to change how OpenIddict reacts to requests.
+OpenIddict 提供了合理的默认设置，但根据不同的使用场景，可以修改默认设置来改变 OpenIddict 对请求的响应方式。

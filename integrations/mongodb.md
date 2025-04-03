@@ -1,28 +1,27 @@
-# MongoDB integration <Badge type="info" text="core" />
+# MongoDB 集成 <Badge type="info" text="core" />
 
-## Basic configuration
+## 基本配置
 
-To configure OpenIddict to use MongoDB as the database for applications, authorizations, scopes and tokens, you'll need to:
-  - **Reference the `OpenIddict.MongoDb` package**:
+要将 OpenIddict 配置为使用 MongoDB 作为应用程序、授权、范围和令牌的数据库，您需要：
+  - **引用 `OpenIddict.MongoDb` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.MongoDb" Version="6.2.0" />
   ```
 
-  - **Configure OpenIddict to use the MongoDB stores**:
+  - **配置 OpenIddict 使用 MongoDB 存储**：
 
   ```csharp
   services.AddOpenIddict()
       .AddCore(options =>
       {
-          // Note: to use a remote server, call the MongoClient constructor overload
-          // that accepts a connection string or an instance of MongoClientSettings.
+          // 注意：要使用远程服务器，请调用接受连接字符串或 MongoClientSettings 实例的 MongoClient 构造函数重载。
           options.UseMongoDb()
                  .UseDatabase(new MongoClient().GetDatabase("openiddict"));
       });
   ```
 
-  Alternatively, you can register the `IMongoDatabase` instance as a service:
+  或者，您可以将 `IMongoDatabase` 实例注册为服务：
 
   ```csharp
   services.AddOpenIddict()
@@ -31,13 +30,11 @@ To configure OpenIddict to use MongoDB as the database for applications, authori
           options.UseMongoDb();
       });
 
-   // Note: to use a remote server, call the MongoClient constructor overload
-   // that accepts a connection string or an instance of MongoClientSettings.
+   // 注意：要使用远程服务器，请调用接受连接字符串或 MongoClientSettings 实例的 MongoClient 构造函数重载。
    services.AddSingleton(new MongoClient().GetDatabase("shared-database-instance"));
    ```
 
-  - **Create indexes to improve performance** (recommended): for that, you can use the following script to
-initialize the database and create the indexes used by the OpenIddict entities:
+  - **创建索引以提高性能**（推荐）：为此，您可以使用以下脚本来初始化数据库并创建 OpenIddict 实体使用的索引：
 
   ```csharp
   using System.Threading;
@@ -116,8 +113,8 @@ initialize the database and create the indexes used by the OpenIddict entities:
           Builders<OpenIddictMongoDbToken>.IndexKeys.Ascending(token => token.ReferenceId),
           new CreateIndexOptions<OpenIddictMongoDbToken>
           {
-              // Note: partial filter expressions are not supported on Azure Cosmos DB.
-              // As a workaround, the expression and the unique constraint can be removed.
+              // 注意：Azure Cosmos DB 不支持部分筛选表达式。
+              // 作为解决方法，可以移除表达式和唯一约束。
               PartialFilterExpression = Builders<OpenIddictMongoDbToken>.Filter.Exists(token => token.ReferenceId),
               Unique = true
           }),
@@ -143,12 +140,12 @@ initialize the database and create the indexes used by the OpenIddict entities:
   ]);
   ```
 
-## Advanced configuration
+## 高级配置
 
-### Use custom entities
+### 使用自定义实体
 
-For applications that require storing additional data alongside the properties used by OpenIddict, custom entities can be used. For that, you need to:
-  - **Create custom entities**:
+对于需要存储 OpenIddict 使用的属性之外的其他数据的应用程序，可以使用自定义实体。为此，您需要：
+  - **创建自定义实体**：
 
   ```csharp
   public class CustomApplication : OpenIddictMongoDbApplication
@@ -172,7 +169,7 @@ For applications that require storing additional data alongside the properties u
   }
   ```
 
-  - **Configure MongoDb to use the custom entities**:
+  - **配置 MongoDb 使用自定义实体**：
 
   ```csharp
   services.AddOpenIddict()
@@ -186,10 +183,10 @@ For applications that require storing additional data alongside the properties u
       });
   ```
 
-### Use custom collection names
+### 使用自定义集合名称
 
-By default, OpenIddict uses the `openiddict.[entity name]s` pattern to determine the default collection names.
-Applications that require using different collection names can use the `Set*CollectionName()` helpers:
+默认情况下，OpenIddict 使用 `openiddict.[实体名称]s` 模式来确定默认集合名称。
+需要使用不同集合名称的应用程序可以使用 `Set*CollectionName()` 辅助方法：
 
 ```csharp
 services.AddOpenIddict()

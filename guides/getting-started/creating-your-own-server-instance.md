@@ -1,76 +1,76 @@
-# Creating your own server instance <Badge type="danger" text="server" />
+# 创建自己的服务器实例 <Badge type="danger" text="server" />
 
 > [!NOTE]
-> This guide assumes you're using ASP.NET Core to host your authorization server. For samples showing how to use the OpenIddict server feature in
-> ASP.NET 4.6.1+ applications, see [OWIN/ASP.NET 4.8 samples](https://github.com/openiddict/openiddict-samples?tab=readme-ov-file#owinaspnet-48-samples).
+> 本指南假设你使用 ASP.NET Core 来托管你的授权服务器。有关如何在 ASP.NET 4.6.1+ 应用程序中使用 OpenIddict 服务器功能的示例，
+> 请参见 [OWIN/ASP.NET 4.8 示例](https://github.com/openiddict/openiddict-samples?tab=readme-ov-file#owinaspnet-48-samples)。
 
-**To implement a custom OpenID Connect server using OpenIddict, the simplest option is to clone one of the official samples**
-from the [openiddict-samples repository](https://github.com/openiddict/openiddict-samples).
+**使用 OpenIddict 实现自定义 OpenID Connect 服务器最简单的方法是克隆官方示例**
+从 [openiddict-samples 仓库](https://github.com/openiddict/openiddict-samples)。
 
-If you don't want to start from one of the recommended samples, you'll need to:
+如果你不想从推荐的示例开始，你需要：
 
-  - **Reuse an existing project or create a new one**: when creating a new project using Visual Studio's default ASP.NET Core template,
-  using **individual user accounts authentication** is strongly recommended as it automatically includes the default ASP.NET Core Identity UI,
-  based on Razor Pages, should you later need to implement a user authentication flow like the authorization code flow.
+  - **重用现有项目或创建新项目**：使用 Visual Studio 的默认 ASP.NET Core 模板创建新项目时，
+  强烈建议使用**个人用户账户认证**，因为它自动包含基于 Razor Pages 的默认 ASP.NET Core Identity UI，
+  如果你之后需要实现用户认证流程（如授权码流程）的话。
 
-  - **Update your `.csproj` file** to reference the latest `OpenIddict.AspNetCore` and `OpenIddict.EntityFrameworkCore` packages:
+  - **更新你的 `.csproj` 文件**以引用最新的 `OpenIddict.AspNetCore` 和 `OpenIddict.EntityFrameworkCore` 包：
 
   ```xml
   <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
   <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.2.0" />
   ```
 
-  - **Register your Entity Framework Core database context and configure the OpenIddict core services** in `Program.cs`
-  (or `Startup.cs`, depending on whether you're using the minimal host or the regular host):
+  - **在 `Program.cs` 中注册你的 Entity Framework Core 数据库上下文并配置 OpenIddict 核心服务**
+  （或 `Startup.cs`，取决于你使用的是最小主机还是常规主机）：
 
   ```csharp
   services.AddDbContext<ApplicationDbContext>(options =>
   {
-      // Configure Entity Framework Core to use Microsoft SQL Server.
+      // 配置 Entity Framework Core 使用 Microsoft SQL Server。
       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 
-      // Register the entity sets needed by OpenIddict.
-      // Note: use the generic overload if you need to replace the default OpenIddict entities.
+      // 注册 OpenIddict 所需的实体集。
+      // 注意：如果需要替换默认的 OpenIddict 实体，请使用泛型重载。
       options.UseOpenIddict();
   });
 
   services.AddOpenIddict()
 
-      // Register the OpenIddict core components.
+      // 注册 OpenIddict 核心组件。
       .AddCore(options =>
       {
-          // Configure OpenIddict to use the Entity Framework Core stores and models.
-          // Note: call ReplaceDefaultEntities() to replace the default entities.
+          // 配置 OpenIddict 使用 Entity Framework Core 存储和模型。
+          // 注意：调用 ReplaceDefaultEntities() 来替换默认实体。
           options.UseEntityFrameworkCore()
                  .UseDbContext<ApplicationDbContext>();
       });
   ```
 
-  - **Configure the OpenIddict server services**:
+  - **配置 OpenIddict 服务器服务**：
 
   ```csharp
   services.AddOpenIddict()
 
-      // Register the OpenIddict server components.
+      // 注册 OpenIddict 服务器组件。
       .AddServer(options =>
       {
-          // Enable the token endpoint.
+          // 启用令牌端点。
           options.SetTokenEndpointUris("connect/token");
 
-          // Enable the client credentials flow.
+          // 启用客户端凭据流程。
           options.AllowClientCredentialsFlow();
 
-          // Register the signing and encryption credentials.
+          // 注册签名和加密凭据。
           options.AddDevelopmentEncryptionCertificate()
                  .AddDevelopmentSigningCertificate();
 
-          // Register the ASP.NET Core host and configure the ASP.NET Core options.
+          // 注册 ASP.NET Core 主机并配置 ASP.NET Core 选项。
           options.UseAspNetCore()
                  .EnableTokenEndpointPassthrough();
       });
   ```
 
-  - **Make sure the ASP.NET Core authentication middleware is correctly registered at the right place**:
+  - **确保 ASP.NET Core 认证中间件在正确的位置注册**：
 
   ```csharp
   app.UseDeveloperExceptionPage();
@@ -90,11 +90,11 @@ If you don't want to start from one of the recommended samples, you'll need to:
   });
   ```
 
-  - **Create your own authorization controller:**
+  - **创建你自己的授权控制器：**
   > [!NOTE]
-  > Implementing a custom authorization controller is required to allow OpenIddict to create tokens based on the identities and claims you provide.
+  > 实现自定义授权控制器是必需的，以允许 OpenIddict 基于你提供的身份和声明创建令牌。
 
-  Here's an example for the client credentials grant:
+  这是客户端凭据授权的示例：
 
   ```csharp
   public class AuthorizationController : Controller
@@ -110,40 +110,39 @@ If you don't want to start from one of the recommended samples, you'll need to:
           var request = HttpContext.GetOpenIddictServerRequest();
           if (request.IsClientCredentialsGrantType())
           {
-              // Note: the client credentials are automatically validated by OpenIddict:
-              // if client_id or client_secret are invalid, this action won't be invoked.
+              // 注意：客户端凭据由 OpenIddict 自动验证：
+              // 如果 client_id 或 client_secret 无效，此操作不会被调用。
 
               var application = await _applicationManager.FindByClientIdAsync(request.ClientId) ??
-                  throw new InvalidOperationException("The application cannot be found.");
+                  throw new InvalidOperationException("找不到应用程序。");
 
-              // Create a new ClaimsIdentity containing the claims that
-              // will be used to create an id_token, a token or a code.
+              // 创建一个新的 ClaimsIdentity，包含将用于创建 id_token、token 或 code 的声明。
               var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType, Claims.Name, Claims.Role);
 
-              // Use the client_id as the subject identifier.
+              // 使用 client_id 作为主题标识符。
               identity.SetClaim(Claims.Subject, await _applicationManager.GetClientIdAsync(application));
               identity.SetClaim(Claims.Name, await _applicationManager.GetDisplayNameAsync(application));
 
               identity.SetDestinations(static claim => claim.Type switch
               {
-                  // Allow the "name" claim to be stored in both the access and identity tokens
-                  // when the "profile" scope was granted (by calling principal.SetScopes(...)).
+                  // 当授予 "profile" 作用域时，允许 "name" 声明同时存储在访问令牌和身份令牌中
+                  // （通过调用 principal.SetScopes(...)）。
                   Claims.Name when claim.Subject.HasScope(Scopes.Profile)
                       => [Destinations.AccessToken, Destinations.IdentityToken],
 
-                  // Otherwise, only store the claim in the access tokens.
+                  // 否则，仅将声明存储在访问令牌中。
                   _ => [Destinations.AccessToken]
               });
 
               return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
           }
 
-          throw new NotImplementedException("The specified grant is not implemented.");
+          throw new NotImplementedException("未实现指定的授权类型。");
       }
   }
   ```
 
-  - **Register your client application** (e.g using an `IHostedService` implementation):
+  - **注册你的客户端应用程序**（例如使用 `IHostedService` 实现）：
 
   ```csharp
   public class Worker : IHostedService
@@ -182,11 +181,11 @@ If you don't want to start from one of the recommended samples, you'll need to:
   ```
 
   > [!NOTE]
-  > Before running the application, make sure the database is updated with OpenIddict tables by running `Add-Migration` and `Update-Database`.
+  > 在运行应用程序之前，确保通过运行 `Add-Migration` 和 `Update-Database` 更新数据库中的 OpenIddict 表。
 
-  - Test your server implementation using Postman:
+  - 使用 Postman 测试你的服务器实现：
 
-![OAuth 2.0 client credentials grant with Postman](creating-your-own-server-instance/postman.png)
+![使用 Postman 进行 OAuth 2.0 客户端凭据授权](creating-your-own-server-instance/postman.png)
 
 > [!TIP]
-> Recommended read: [Implementing token validation in your APIs](implementing-token-validation-in-your-apis.md).
+> 推荐阅读：[在你的 API 中实现令牌验证](implementing-token-validation-in-your-apis.md)。

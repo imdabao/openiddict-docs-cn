@@ -1,56 +1,56 @@
-# OpenIddict documentation
+# OpenIddict 文档
 
-This repository provides the documentation for the [OpenIddict](https://github.com/openiddict) project.
+本仓库提供 [OpenIddict](https://github.com/openiddict) 项目的文档。
 
-## Security policy
+## 安全政策
 
-Security issues and bugs should be reported privately by emailing security@openiddict.com.
-You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+安全问题和漏洞应通过发送邮件至 security@openiddict.com 进行私密报告。
+您应该在24小时内收到回复。如果由于某些原因没有收到回复，请通过电子邮件跟进，以确保我们收到了您的原始消息。
 
-## Development
+## 开发
 
-This repository uses [VitePress](https://vitepress.dev/). For more information, read [Getting started](https://vitepress.dev/guide/getting-started).
+本仓库使用 [VitePress](https://vitepress.dev/)。更多信息，请阅读 [入门指南](https://vitepress.dev/guide/getting-started)。
 
-## Support policy
+## 支持政策
 
-If you need support, please first make sure you're [sponsoring the project](https://github.com/sponsors/kevinchalet).
-Depending on the tier you selected, you can open a GitHub ticket or send an email to contact@openiddict.com for private support.
-Alternatively, you can also post your question on [Gitter](https://app.gitter.im/#/room/#openiddict_openiddict-core:gitter.im).
+如果您需要支持，请首先确保您已经 [赞助了该项目](https://github.com/sponsors/kevinchalet)。
+根据您选择的等级，您可以开启 GitHub 工单或发送邮件至 contact@openiddict.com 获取私人支持。
+另外，您也可以在 [Gitter](https://app.gitter.im/#/room/#openiddict_openiddict-core:gitter.im) 上提出您的问题。
 
-**Support is only offered for the latest stable version of OpenIddict**. There are, however, two exceptions to this policy:
-  - **ABP Framework users receive patches for OpenIddict for as long as ABP Framework itself is supported by Volosoft**
-  (typically a year following the release of a major ABP version), whether they have a commercial ABP license or just use the free packages.
+**支持仅提供给 OpenIddict 的最新稳定版本**。但是，此政策有两个例外：
+  - **ABP Framework 用户在 Volosoft 支持 ABP Framework 期间可以获得 OpenIddict 的补丁**
+  （通常是在 ABP 主要版本发布后的一年内），无论他们是否拥有商业 ABP 许可证或仅使用免费包。
 
-  | OpenIddict branch | ABP Framework branch | End of support date (estimated) |
+  | OpenIddict 分支 | ABP Framework 分支 | 支持结束日期（预计） |
   |-------------------|----------------------|---------------------------------|
-  | 4.x               | 7.x                  | December 19, 2024               |
-  | 5.x               | 8.x                  | November 19, 2025               |
-  | 6.x (current)     | 9.x                  | Currently supported             |
+  | 4.x               | 7.x                  | 2024年12月19日                  |
+  | 5.x               | 8.x                  | 2025年11月19日                  |
+  | 6.x（当前）       | 9.x                  | 目前支持中                      |
 
-  - **OpenIddict sponsors are offered extended support depending on the selected sponsorship tier:**
-    - $100/month sponsors get full support for the previous version 1 month following the release of a new major version.
-    - $250/month sponsors get full support for the previous version 6 months following the release of a new major version.
-    - $500/month sponsors get full support for the previous version 12 months following the release of a new major version.
-    - $1,000/month sponsors get full support for the previous version 24 months following the release of a new major version.
+  - **OpenIddict 赞助者根据所选赞助等级获得延长支持：**
+    - 每月 $100 的赞助者在新主要版本发布后可获得前一版本 1 个月的完整支持。
+    - 每月 $250 的赞助者在新主要版本发布后可获得前一版本 6 个月的完整支持。
+    - 每月 $500 的赞助者在新主要版本发布后可获得前一版本 12 个月的完整支持。
+    - 每月 $1,000 的赞助者在新主要版本发布后可获得前一版本 24 个月的完整支持。
 
-  | OpenIddict branch | Sponsorship tier       | End of support date |
+  | OpenIddict 分支 | 赞助等级              | 支持结束日期        |
   |-------------------|------------------------|---------------------|
-  | 4.x               | $100/month (or more)   | January 18, 2024    |
-  | 4.x               | $250/month (or more)   | June 18, 2024       |
-  | 4.x               | $500/month (or more)   | December 18, 2024   |
-  | 4.x               | $1,000/month (or more) | December 18, 2025   |
+  | 4.x               | 每月 $100（或更多）   | 2024年1月18日      |
+  | 4.x               | 每月 $250（或更多）   | 2024年6月18日      |
+  | 4.x               | 每月 $500（或更多）   | 2024年12月18日     |
+  | 4.x               | 每月 $1,000（或更多） | 2025年12月18日     |
   |                   |                        |                     |
-  | 5.x               | $100/month (or more)   | January 17, 2025    |
-  | 5.x               | $250/month (or more)   | June 17, 2025       |
-  | 5.x               | $500/month (or more)   | December 17, 2025   |
-  | 5.x               | $1,000/month (or more) | December 17, 2026   |
+  | 5.x               | 每月 $100（或更多）   | 2025年1月17日      |
+  | 5.x               | 每月 $250（或更多）   | 2025年6月17日      |
+  | 5.x               | 每月 $500（或更多）   | 2025年12月17日     |
+  | 5.x               | 每月 $1,000（或更多） | 2026年12月17日     |
   |                   |                        |                     |
-  | 6.x (current)     | Any                    | Currently supported |
+  | 6.x（当前）       | 任何等级              | 目前支持中         |
 
-## Contributors
+## 贡献者
 
-**OpenIddict** is actively maintained by **[Kévin Chalet](https://github.com/kevinchalet)**. Contributions are welcome and can be submitted using pull requests.
+**OpenIddict** 由 **[Kévin Chalet](https://github.com/kevinchalet)** 积极维护。欢迎通过提交拉取请求来贡献代码。
 
-## License
+## 许可证
 
-This project is licensed under the **Apache License**. This means that you can use, modify and distribute it freely. See [http://www.apache.org/licenses/LICENSE-2.0.html](http://www.apache.org/licenses/LICENSE-2.0.html) for more details.
+本项目采用 **Apache 许可证**。这意味着您可以自由使用、修改和分发它。详情请参见 [http://www.apache.org/licenses/LICENSE-2.0.html](http://www.apache.org/licenses/LICENSE-2.0.html)。

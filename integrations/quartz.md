@@ -1,15 +1,15 @@
-# Quartz.NET integration <Badge type="info" text="core" />
+# Quartz.NET 集成 <Badge type="info" text="core" />
 
-## Basic configuration
+## 基础配置
 
-To configure OpenIddict to use Quartz.NET to perform automated cleanup tasks, you'll need to:
-  - **Reference the `OpenIddict.Quartz` package**:
+要配置 OpenIddict 使用 Quartz.NET 执行自动清理任务，你需要：
+  - **引用 `OpenIddict.Quartz` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.Quartz" Version="6.2.0" />
   ```
 
-  - **Register the Quartz.NET services and configure it to use dependency injection and an in-memory store**:
+  - **注册 Quartz.NET 服务并配置它使用依赖注入和内存存储**：
 
   ```csharp
   services.AddQuartz(options =>
@@ -21,18 +21,18 @@ To configure OpenIddict to use Quartz.NET to perform automated cleanup tasks, yo
   ```
 
   > [!TIP]
-  > For more information, read [Microsoft DI Integration](https://www.quartz-scheduler.net/documentation/quartz-3.x/packages/microsoft-di-integration.html).
+  > 更多信息请参阅 [Microsoft DI 集成](https://www.quartz-scheduler.net/documentation/quartz-3.x/packages/microsoft-di-integration.html)。
 
-  - **Register the Quartz.NET hosted service and configure it to block shutdown until all jobs are complete**:
+  - **注册 Quartz.NET 托管服务并配置它在所有任务完成前阻止关闭**：
 
   ```csharp
   services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
   ```
 
   > [!TIP]
-  > For more information, read [Hosted Services Integration](https://www.quartz-scheduler.net/documentation/quartz-3.x/packages/hosted-services-integration.html).
+  > 更多信息请参阅 [托管服务集成](https://www.quartz-scheduler.net/documentation/quartz-3.x/packages/hosted-services-integration.html)。
 
-  - **Configure OpenIddict to use the Quartz.NET integration**:
+  - **配置 OpenIddict 使用 Quartz.NET 集成**：
 
   ```csharp
   services.AddOpenIddict()
@@ -42,12 +42,12 @@ To configure OpenIddict to use Quartz.NET to perform automated cleanup tasks, yo
       });
   ```
 
-## Advanced configuration
+## 高级配置
 
-### Disable pruning
+### 禁用清理
 
-The default cleanup task of the Quartz.NET integration automatically removes orphaned tokens and authorizations.
-This behavior can be customized by disabling any (or both) pruning jobs:
+Quartz.NET 集成的默认清理任务会自动删除孤立的令牌和授权。
+可以通过禁用任一（或两个）清理任务来自定义此行为：
 
 ```csharp
 services.AddOpenIddict()
@@ -59,10 +59,10 @@ services.AddOpenIddict()
     });
 ```
 
-### Pruning lifetime
+### 清理生命周期
 
-All tokens/authorizations will be removed during the pruning job if they are older than 14 days.
-This lifespan can be changed for tokens and authorizations independently:
+在清理任务期间，所有超过 14 天的令牌/授权都将被删除。
+可以分别为令牌和授权更改此生命周期：
 
 ```csharp
 services.AddOpenIddict()
@@ -75,12 +75,12 @@ services.AddOpenIddict()
 ```
 
 > [!WARNING]
-> The mimum lifespan for pruning is **10 minutes**.
+> 清理的最小生命周期为 **10 分钟**。
 
-### Retry failed jobs
+### 重试失败的任务
 
-Any failed Quartz.NET job will be retried twice by default.
-This retry count can be configured with this setting:
+默认情况下，任何失败的 Quartz.NET 任务将重试两次。
+可以通过以下设置配置重试次数：
 
 ```csharp
 services.AddOpenIddict()

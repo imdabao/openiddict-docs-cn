@@ -1,56 +1,55 @@
-# Implementing token validation in your APIs <Badge type="tip" text="validation" />
+# 在 API 中实现令牌验证 <Badge type="tip" text="validation" />
 
 > [!NOTE]
-> This guide assumes you're using ASP.NET Core to host your APIs. For samples showing how to use the OpenIddict validation feature in
-> ASP.NET 4.6.1+ applications, see [OWIN/ASP.NET 4.8 samples](https://github.com/openiddict/openiddict-samples?tab=readme-ov-file#owinaspnet-48-samples).
+> 本指南假设你使用 ASP.NET Core 来托管你的 API。有关如何在 ASP.NET 4.6.1+ 应用程序中使用 OpenIddict 验证功能的示例，
+> 请参见 [OWIN/ASP.NET 4.8 示例](https://github.com/openiddict/openiddict-samples?tab=readme-ov-file#owinaspnet-48-samples)。
 
-**To implement token validation support for your APIs, the simplest option is to clone one of the official samples**
-from the [openiddict-samples repository](https://github.com/openiddict/openiddict-samples).
+**为你的 API 实现令牌验证支持，最简单的方法是克隆官方示例**
+从 [openiddict-samples 仓库](https://github.com/openiddict/openiddict-samples)。
 
-If you don't want to start from one of the recommended samples, you'll need to:
+如果你不想从推荐的示例开始，你需要：
 
-  - **Reference the `OpenIddict.AspNetCore` package**:
+  - **引用 `OpenIddict.AspNetCore` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.AspNetCore" Version="6.2.0" />
   ```
 
-  - **Configure the OpenIddict validation services** in `Startup.ConfigureServices`:
-    - If the APIs are located in the same project as the OpenIddict server, you can use the `options.UseLocalServer()`
-    API to import the configuration from the local server instance, including the signing and encryption keys:
+  - **在 `Startup.ConfigureServices` 中配置 OpenIddict 验证服务**：
+    - 如果 API 与 OpenIddict 服务器位于同一项目中，你可以使用 `options.UseLocalServer()`
+    API 从本地服务器实例导入配置，包括签名和加密密钥：
 
     ```csharp
     services.AddOpenIddict()
 
-        // Register the OpenIddict validation components.
+        // 注册 OpenIddict 验证组件。
         .AddValidation(options =>
         {
-            // Import the configuration from the local OpenIddict server instance.
+            // 从本地 OpenIddict 服务器实例导入配置。
             options.UseLocalServer();
 
-            // Register the ASP.NET Core host.
+            // 注册 ASP.NET Core 主机。
             options.UseAspNetCore();
         });
     ```
 
-    - If the APIs are located in a different project, you'll need to use OpenID Connect discovery to download the
-    configuration from the remote server instance, including the public signing keys. You'll also need to update
-    the server configuration to use a secret or a X.509 encryption certificate that will be shared with the APIs to
-    be able to decrypt the received access tokens:
+    - 如果 API 位于不同的项目中，你需要使用 OpenID Connect 发现从远程服务器实例下载配置，
+    包括公共签名密钥。你还需要更新服务器配置以使用将与 API 共享的密钥或 X.509 加密证书，
+    以便能够解密接收到的访问令牌：
 
     ```csharp
     services.AddOpenIddict()
         .AddServer(options =>
         {    
-            // Register the encryption credentials. This sample uses a symmetric
-            // encryption key that is shared between the server and the API project.
+            // 注册加密凭据。此示例使用在服务器和 API 项目之间共享的对称
+            // 加密密钥。
             //
-            // Note: in a real world application, this encryption key should be
-            // stored in a safe place (e.g in Azure KeyVault, stored as a secret).
+            // 注意：在实际应用中，此加密密钥应存储在安全的地方
+            //（例如 Azure KeyVault，作为密钥存储）。
             options.AddEncryptionKey(new SymmetricSecurityKey(
                 Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
 
-            // Register the signing credentials.
+            // 注册签名凭据。
             options.AddDevelopmentSigningCertificate();
         });
     ```
@@ -59,28 +58,28 @@ If you don't want to start from one of the recommended samples, you'll need to:
     services.AddOpenIddict()
         .AddValidation(options =>
         {
-            // Note: the validation handler uses OpenID Connect discovery
-            // to retrieve the issuer signing keys used to validate tokens.
+            // 注意：验证处理程序使用 OpenID Connect 发现
+            // 来检索用于验证令牌的颁发者签名密钥。
             options.SetIssuer("https://localhost:44319/");
 
-            // Register the encryption credentials. This sample uses a symmetric
-            // encryption key that is shared between the server and the API project.
+            // 注册加密凭据。此示例使用在服务器和 API 项目之间共享的对称
+            // 加密密钥。
             //
-            // Note: in a real world application, this encryption key should be
-            // stored in a safe place (e.g in Azure KeyVault, stored as a secret).
+            // 注意：在实际应用中，此加密密钥应存储在安全的地方
+            //（例如 Azure KeyVault，作为密钥存储）。
             options.AddEncryptionKey(new SymmetricSecurityKey(
                 Convert.FromBase64String("DRjd/GnduI3Efzen9V9BvbNUfc/VKgXltV7Kbk9sMkY=")));
 
-            // Register the System.Net.Http integration.
+            // 注册 System.Net.Http 集成。
             options.UseSystemNetHttp();
 
-            // Register the ASP.NET Core host.
+            // 注册 ASP.NET Core 主机。
             options.UseAspNetCore();
         });
     ```
 
-  - **Configure your API controllers** to use token authentication by decorating them with
-  `[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]`:
+  - **配置你的 API 控制器** 以使用令牌认证，通过使用
+  `[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]` 装饰它们：
 
     ```csharp
     [Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
@@ -95,9 +94,9 @@ If you don't want to start from one of the recommended samples, you'll need to:
         [HttpGet("message")]
         public async Task<IActionResult> GetMessage()
         {
-            // This demo action requires that the client application be granted the "demo_api" scope.
-            // If it was not granted, a detailed error is returned to the client application to inform it
-            // that the authorization process must be restarted with the specified scope to access this API.
+            // 此演示操作要求客户端应用程序被授予 "demo_api" 范围。
+            // 如果未授予，则向客户端应用程序返回详细错误，通知它
+            // 必须使用指定的范围重新启动授权过程才能访问此 API。
             if (!User.HasScope("demo_api"))
             {
                 return Forbid(
@@ -130,8 +129,8 @@ If you don't want to start from one of the recommended samples, you'll need to:
     ```
 
     > [!NOTE]
-    > Alternatively, if you prefer enforcing token authentication globally, you can configure the ASP.NET Core
-    > authentication stack to use `OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme` as the default scheme:
+    > 或者，如果你更喜欢全局强制执行令牌认证，你可以配置 ASP.NET Core
+    > 认证堆栈使用 `OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme` 作为默认方案：
     >
     > ```csharp
     > services.AddAuthentication(options =>
@@ -140,7 +139,7 @@ If you don't want to start from one of the recommended samples, you'll need to:
     > });
     > ```
     >
-    > Note: this approach is not recommended in applications configured to support both cookie and token authentication.
+    > 注意：在配置为同时支持 cookie 和令牌认证的应用程序中不推荐使用此方法。
 
 > [!TIP]
-> Recommended read: [Creating your own server instance](creating-your-own-server-instance.md).
+> 推荐阅读：[创建你自己的服务器实例](creating-your-own-server-instance.md)。

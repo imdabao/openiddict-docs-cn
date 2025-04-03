@@ -1,15 +1,15 @@
-# Entity Framework 6.x integration <Badge type="info" text="core" />
+# Entity Framework 6.x 集成 <Badge type="info" text="core" />
 
-## Basic configuration
+## 基本配置
 
-To configure OpenIddict to use Entity Framework 6.x as the database for applications, authorizations, scopes and tokens, you'll need to:
-  - **Reference the `OpenIddict.EntityFramework` package**:
+要将 OpenIddict 配置为使用 Entity Framework 6.x 作为应用程序、授权、范围和令牌的数据库，您需要：
+  - **引用 `OpenIddict.EntityFramework` 包**：
 
   ```xml
   <PackageReference Include="OpenIddict.EntityFramework" Version="6.2.0" />
   ```
 
-  - **Create a database context deriving from `DbContext` and register the OpenIddict entities in the model**:
+  - **创建一个继承自 `DbContext` 的数据库上下文，并在模型中注册 OpenIddict 实体**：
 
   ```csharp
   public class ApplicationDbContext : DbContext
@@ -23,7 +23,7 @@ To configure OpenIddict to use Entity Framework 6.x as the database for applicat
   }
   ```
 
-  - **Configure OpenIddict to use the Entity Framework 6.x stores**:
+  - **配置 OpenIddict 使用 Entity Framework 6.x 存储**：
 
   ```csharp
   services.AddOpenIddict()
@@ -34,24 +34,23 @@ To configure OpenIddict to use Entity Framework 6.x as the database for applicat
       });
   ```
 
-  - **Use migrations or recreate the database to add the OpenIddict entities**.
-For more information, read [Code First Migrations](https://docs.microsoft.com/en-us/ef/ef6/modeling/code-first/migrations/).
+  - **使用迁移或重新创建数据库以添加 OpenIddict 实体**。
+有关更多信息，请阅读 [Code First 迁移](https://docs.microsoft.com/en-us/ef/ef6/modeling/code-first/migrations/)。
 
-## Advanced configuration
+## 高级配置
 
-### Use a custom primary key type
+### 使用自定义主键类型
 
-By default, the Entity Framework 6.x integration uses `string` primary keys, which matches the default key type used by ASP.NET Identity.
+默认情况下，Entity Framework 6.x 集成使用 `string` 类型的主键，这与 ASP.NET Identity 使用的默认键类型相匹配。
 
 > [!WARNING]
-> Unlike Entity Framework Core, Entity Framework 6.x doesn't support closed generic types, which prevents using the OpenIddict entities
-> without subclassing them. As such, using a custom primary key type is a bit more complicated with Entity Framework 6.x than with
-> Entity Framework Core and requires implementing custom entities, as highlighted in the next section.
+> 与 Entity Framework Core 不同，Entity Framework 6.x 不支持封闭泛型类型，这导致无法在不子类化的情况下使用 OpenIddict 实体。
+> 因此，在 Entity Framework 6.x 中使用自定义主键类型比在 Entity Framework Core 中更复杂，需要实现自定义实体，如下一节所述。
 
-### Use custom entities
+### 使用自定义实体
 
-For applications that require storing additional data alongside the properties used by OpenIddict, custom entities can be used. For that, you need to:
-  - **Create custom entities**:
+对于需要在 OpenIddict 使用的属性之外存储额外数据的应用程序，可以使用自定义实体。为此，您需要：
+  - **创建自定义实体**：
 
   ```csharp
   public class CustomApplication : OpenIddictEntityFrameworkApplication<long, CustomAuthorization, CustomToken>
@@ -75,20 +74,20 @@ For applications that require storing additional data alongside the properties u
   }
   ```
 
-  - **Call the generic `ReplaceDefaultEntities<TApplication, TAuthorization, TScope, TToken, TKey>()` method to force OpenIddict to use the custom entities**:
+  - **调用泛型方法 `ReplaceDefaultEntities<TApplication, TAuthorization, TScope, TToken, TKey>()` 强制 OpenIddict 使用自定义实体**：
 
   ```csharp
   services.AddOpenIddict()
       .AddCore(options =>
       {
-          // Configure OpenIddict to use the custom entities.
+          // 配置 OpenIddict 使用自定义实体
           options.UseEntityFramework()
                  .UseDbContext<ApplicationDbContext>()
                  .ReplaceDefaultEntities<CustomApplication, CustomAuthorization, CustomScope, CustomToken, long>();
       });
   ```
 
-  - **Register the custom entities in the model**:
+  - **在模型中注册自定义实体**：
 
   ```csharp
   public class ApplicationDbContext : DbContext
