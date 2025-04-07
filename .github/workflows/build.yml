@@ -2,10 +2,10 @@ name: build
 
 on:
   push:
-    branches: [ dev, rel/* ]
+    branches: [ zh-cn, rel/* ]
     tags: [ '*' ]
   pull_request:
-    branches: [ dev, rel/* ]
+    branches: [ zh-cn, rel/* ]
   workflow_dispatch:
 
 permissions:
@@ -47,7 +47,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == false && github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/zh-cn'
     environment:
       name: github-pages
       url: https://documentation.openiddict.com/
