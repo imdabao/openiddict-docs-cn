@@ -6,6 +6,7 @@ import { nav as zhNav, sidebar as zhSidebar } from "./locales/zh"
 export default defineConfig({
   title: "OpenIddict",
   description: "Documentation for the OpenIddict project",
+  base: "/openiddict-docs-cn/",
   cleanUrls: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
